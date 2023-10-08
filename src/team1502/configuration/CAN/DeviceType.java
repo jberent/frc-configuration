@@ -9,7 +9,7 @@ public enum DeviceType {
     Accelerometer           ("Accelerometer",            5),    
     UltrasonicSensor        ("Ultrasonic Sensor",        6),    
     GearToothSensor         ("Gear Tooth Sensor",        7),    
-    PowerDistributionModule ("Power DistributionModule", 8),
+    PowerDistributionModule ("Power Distribution Module", 8),
     PneumaticsController    ("Pneumatics Controller",    9),
     Miscellaneous           ("Miscellaneous",           10),
     IOBreakout              ("IO Breakout",             11);

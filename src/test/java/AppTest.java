@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import team1502.configuration.CANConfiguration;
 import team1502.configuration.Motor;
+import team1502.configuration.Robot;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -17,5 +18,10 @@ public class AppTest {
         CAN.Id(1, FrontLeftDriveMotor);
         assertEquals(1, FrontLeftDriveMotor.GetCanId());
 
+    }
+
+    public static void Log(Robot robot)
+    {
+        robot.
     }
 }

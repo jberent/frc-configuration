@@ -4,6 +4,7 @@ import team1502.configuration.CANConfiguration;
 import team1502.configuration.Devices;
 import team1502.configuration.Motor;
 import team1502.configuration.Robot;
+import team1502.configuration.SupportedDevices;
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
 
@@ -22,6 +23,7 @@ public class App {
                 case "0" : Test0(); break;
                 case "1" : Test1(); break;
                 case "2" : Test2(); break;
+                case "3" : Test3(); break;
                 default : echo(test + " [testnumber] is not a known test");
             }
         } catch (Exception ex) {
@@ -66,41 +68,52 @@ public class App {
     }
     
     public static void Test2() {
-        var robot = Create1502();
-        System.out.println("Robot " + robot.name + "created");
-        System.out.println("Test2 - Finished");
+        try {
+            var robot = Create1502();
+            System.out.println("Robot " + robot.name + "created");
+            System.out.println("Test2 - Finished");
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
-
-     
+    public static void Test3() {
+        try {
+            var robot = Create1502();
+            System.out.println("Robot " + robot.name + "created");
+            System.out.println("Test3 - Finished");
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+    
 
     static Devices Basic2(Devices hw, String rioVersion) {
         return hw.
-        RoboRIO("RIO", rioVersion)
+        RoboRIO("RIO", rioVersion, rio -> rio.PWM(pwm -> pwm).DIO(dio -> dio))
         .Radio("RADIO")
         .RadioPowerModule("RPM")
         .RadioBarrelJack("RBJ")
         .EthernetSwitch("ETH");
-
     }
 
     static Devices SwerveDrive(Devices hw) {
         return hw.SwerveDrive(dr -> dr
             .SwerveModule("FL", sw -> sw
-                .Motor("FLD")
-                .Motor("FLT")
-                .Encoder("FLE"))
+                .Motor("FLD", "NEO")
+                .Motor("FLT", "NEO")
+                .Encoder("FLE", "CANcoder"))
             .SwerveModule("FR", sw -> sw
-                .Motor("FRD")
-                .Motor("FRT")
-                .Encoder("FRE"))
+                .Motor("FRD", "NEO")
+                .Motor("FRT", "NEO")
+                .Encoder("FRE", "CANcoder"))
             .SwerveModule("RL", sw -> sw
-                .Motor("RLD")
-                .Motor("RLT")
-                .Encoder("RLE"))
+                .Motor("RLD", "NEO")
+                .Motor("RLT", "NEO")
+                .Encoder("RLE", "CANcoder"))
             .SwerveModule("RR", sw -> sw
-                .Motor("RRD")
-                .Motor("RRT")
-                .Encoder("RRE")));
+                .Motor("RRD", "NEO")
+                .Motor("RRT", "NEO")
+                .Encoder("RRE", "CANcoder")));
     }
     
     static Robot CreateTestBoard1502() {
@@ -108,9 +121,9 @@ public class App {
             .Create("testboard_1502", r -> r
 
             .Devices(hw ->
-                SwerveDrive(hw)
-                .DC("DC-DC")
-                .Gyro("GYRO")
+                // SwerveDrive(hw)
+                hw.DC("DC-DC")
+                .Gyro("GYRO", "Pigeon2")
 
             )            
             .PDP("PDH", pdp -> pdp
@@ -125,44 +138,96 @@ public class App {
         );
     } 
 
+    static Devices EquipmentList(Devices hw) {
+        return hw
+            .MotorController("NEO", mc -> mc // neo.brushless, CANSparkMax
+                .Manufacturer(Manufacturer.REVRobotics)
+                .Device(SupportedDevices.MotorCANSparkMax)
+                .PowerProfile(380))                
+            .MotorController("NEO-550", mc -> mc // neo.brushless, CANSparkMax
+                .Manufacturer(Manufacturer.REVRobotics)
+                .Device(SupportedDevices.MotorCANSparkMax)
+                .PowerProfile(265))
+            .Accelerometer("CANcoder", cs -> cs // neo.brushless, CANSparkMax
+                .Manufacturer(Manufacturer.CTRElectronics)
+                .Device(SupportedDevices.CANcoder)
+                .PowerProfile(265))
+            .Gyro("Pigeon2", cs -> cs // neo.brushless, CANSparkMax
+                .Manufacturer(Manufacturer.CTRElectronics)
+                .Device(SupportedDevices.Pigeon2)
+                .PowerProfile(0.4))
+            .Device("RIO", 45) // +RSL 0.6 ??
+            .Device("RADIO", 0.79)
+            .Device("RPM", 12.0) // radio power module
+            .Device("RBJ", 12.0) // radio barrel jack
+            .Device("RSL", 0.6) // radio signal light
+            .Device("ETH", 12.0)
+            .Device("TOF", 0.02)
+            .Device("Commpressor", 120.0)
+            .Device("LimeLight", 60.0)
+            .Device("RaspberryPi", 60.0) //? + camera
+            .Device("LED-5V", 25.0) // 5V addressable LEDs - 5A max
+        ;
+    }
+
     static Robot Create1502() {
         return Robot
-            .Create("1502", r -> r
+            .Create("1502", robot -> robot
 
             .Devices(hw -> hw
-                .Common(() -> Basic2(hw, "2.0"))
-                .Common(() -> SwerveDrive(hw))
+                .Include(() -> EquipmentList(hw))
+                //.Common(() -> Basic2(hw, "2.0"))
                 
-                .Gyro("GYRO") // Pigeon Gyro
+                .RoboRIO("RIO", "2.0", rio -> rio
+                    .PWM(pwm -> pwm
+                        .Spark(0, "LED-L", "LED-5V") // left_blinkin 5V addressable LEDs
+                        .Spark(1, "LED-R", "LED-5V") // right_blinkin
+                    )
+                )
+
+                .Include(() -> SwerveDrive(hw))
+                // WHEEL_BASE_WIDTH _LENGTH 25"x32"; DIAMETER 4"
+                // GYRO_REVERSED
+                // motors-reversed: all
                 
                 .Subsystem("ARM", s -> s
-                    .Motor("R-ARM")
-                    .Motor("L-ARM")
-                    .Motor("X-ARM")
+                    .Motor("R-ARM", "NEO-550")
+                    .Motor("L-ARM", "NEO-550")
+                    .Motor("X-ARM", "NEO-550")
                 )
                 
                 .PH("PCM", ph -> ph
-                    .Solenoid(0, "SOL")
+                    .Compressor("Compressor")
+                    .Solenoid(15, 0, "SOL") // REVPH
                 )
                 
-                .DC("DC-DC")
-                .Pi("PhotonVisionone", "10.15.02.11")
-                .Pi("PhotonVisiontwo", "10.15.02.12")
+                .DC("DC-DC", dc -> dc
+                    .Pi("PhotonVisionone", "10.15.02.11")
+                    .Pi("PhotonVisiontwo", "10.15.02.12")
+                )
                 
                 .MPM("RM-PDP", mpm -> mpm // REV Mini Power Module
-                    .Ch(0, "RRE")
-                    .Ch(1, "FRE")                
+                    .Ch(0, 10, "RRE")
+                    .Ch(1, 10, "FRE")                
                 )
 
                 .MPM("LM-PDP", mpm -> mpm
-                    .Encoder(0, "GYRO")
-                    .Encoder(3, "FLE")
-                    .Encoder(4, "ETH")
-                    .Encoder(5, "RLE")                
+                    .Ch(0, 10, ch -> ch.Gyro("GYRO", "Pigeon2") )
+                    .Ch(3, 10, "FLE")
+                    .Ch(4, 10, ch -> ch
+                        .EthernetSwitch("ETH") // also provides POE
+                            .Radio("RADIO")
+                                .RadioPowerModule("RPM")
+                                .RadioBarrelJack("RBJ")
+                        )
+                    .Ch(5, 10, "RLE")               
                 )
             )
             
+            // SHOW POWER DISTRUBTION HUB separately to make it easier to reference
             .PDP("PDH", pdp -> pdp
+                // LEFT SIDE                                 RIGHT SIDE
+                //======================================     ======================================
                 .Ch(10, 30, "DC-DC")     .Ch(9, 10, "PCM")
                 .Ch(11)                             .Ch(7)
                 .Ch(12, 30, "RM-PDP")    .Ch(8)
@@ -174,30 +239,31 @@ public class App {
                 .Ch(18, 40, "RRD")       .Ch(1, 40, "FLD")
                 .Ch(19, 40, "RRT")       .Ch(0, 40, "FLT")
 
-                .Ch(20, 10, "RIO")
-                .Ch(21, 10, "RPM")
-                .Ch(22, 10, "RBJ")
+                .Ch(20, 10, "RIO") // + LEDs?
+                .Ch(21, 10, "RPM") // these two are
+                .Ch(22, 10, "RBJ") // redundant power sources
                 .Ch(22) // switchable
             )
 
+            // SHOW CAN assignments separately to make it easier to reference
             .CAN(can -> can
-                .Id(1, "RRT")
-                .Id(2, "RRD")
+                .Id(1, "RRT")       // ANGLE_BACK_RIGHT
+                .Id(2, "RRD")       // DRIVE_BACK_RIGHT
                 .Id(3, "RLT")
-                .Id(4, "RLD")
+                .Id(4, "RLD")       // DRIVE_BACK_LEFT
                 .Id(5, "FLT")
-                .Id(6, "FLD")
+                .Id(6, "FLD")       // DRIVE_FRONT_LEFT
                 .Id(7, "FRT")
-                .Id(8, "FRD")
+                .Id(8, "FRD")       // DRIVE_FRONT_RIGHT
                 .Id(9, "PDH")
-                .Id(10, "RRE")
-                .Id(11, "RLE")
-                .Id(12, "FLE")
-                .Id(13, "FRE")
-                .Id(14, "GYRO")
-                .Id(16, "R-ARM")
-                .Id(17, "L-ARM")
-                .Id(18, "X-ARM")
+                .Id(10, "RRE")      // BACK_RIGHT_CAN_CODER, false 91.4
+                .Id(11, "RLE")      // BACK_LEFT_CAN_CODER, false, 15.0
+                .Id(12, "FLE")      // FRONT_LEFT_CAN_CODER, false, 111.4
+                .Id(13, "FRE")      // FRONT_RIGHT_CAN_CODER, false, 104.0
+                .Id(14, "GYRO")     // Pigeon2
+                .Id(16, "R-ARM")    // ARM_LEAD
+                .Id(17, "L-ARM")    // ARM_FOLLOW
+                .Id(18, "X-ARM")    // EXTEND
             )
         );
     } 
