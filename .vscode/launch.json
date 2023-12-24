@@ -22,7 +22,7 @@
             "name": "Launch Test",
             "request": "launch",
             "mainClass": "App",
-            "args": "3",
+            "args": null,
             "projectName": "hardware_151fdfd3"
         }
     ]

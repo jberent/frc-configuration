@@ -1,12 +1,17 @@
 package team1502.configuration;
 
+import team1502.configuration.CAN.CanInfo;
+
 public class ConfigurationItem {
 
-    public String Name;
-    public String Category;
+    public String name;
+    public CanInfo canInfo;
+    public PowerProfile powerProfile;
+    
+    //public String Category;
 
     public ConfigurationItem() {}
-    public ConfigurationItem(String name) {this.Name = name;}
+    public ConfigurationItem(String name) {this.name = name;}
 
     // public ConfigurationItem(String name) {
     //     this.Name = name;

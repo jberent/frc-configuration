@@ -1,3 +1,79 @@
+For configuration support
+
+All devices
+  * CAN devices (Controllers)
+  * Powered by PDP
+
+So how to build instance from "template"?
+(repetative otherwise? not for single items, though?)
+
+Both? Build an instance or build a "Builder/Factory/Installer"?
+How about initalizing the installed devices? Just supply values or handle init?
+
+Equipment
+  + template
+    + CAN info -- mfr, type
+    + PDP info -- peak power
+  + instance
+    + CAN Id
+    + PDP channel, other profile
+    + configuration properties
+
+* PDP
+  * All devices
+* Controllers (CAN)
+  * Ensure CAN devices are unique
+* non CAN
+  * Motors - power, gears, etc
+  * Drive Train - wheel diameter, etc
+
+Definitions - Equipment
+Define the configurationItem, e.g., manufacturer, capabilities
+Declare the device: CAN.Id, PDP.Channel, properties, gears, etc
+
+Instances? Put them on CAN and/or PDP
+
+variables/references or "Names" ??
+The code explicitly communicates with the Controller, most of 1502 is CAN
+The code also needs to know about non-CAN configuration properties
+
+```
+Max Speed
+Go Straight Gain
+
+  Module
+    Translation2d (base width/length)
+    gear ratio
+    wheel diameter
+    motor PIDs
+    ramp rate (drive motor)
+    current limit (drive motor)
+  Drive
+    Controller : ICAN (SparkMax) -- all control is through e.g., CANSparkMax
+      ConfigurationItem (Motor) -- physical properties
+        Reversed?
+        IdleMode
+        brushless?
+        gear ratio
+    ["hidden"] Controller : ICAN (SparkMax) RelativeEncoder
+      ConfigurationItem (Encoder)
+      offset
+      direction (false == CCW)
+
+  Turn
+        Reversed?
+        IdleMode
+        brushless?
+        gear ratio
+        [-PI to +PI]
+    CANcoder
+        Direction
+        Offset
+
+
+```
+
+
 Blinken LED Driver
 REV-11-1105
 

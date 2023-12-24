@@ -5,11 +5,32 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.spi.ResourceBundleControlProvider;
 
+import team1502.configuration.CAN.CanMap;
+import team1502.configuration.CAN.DeviceType;
+import team1502.configuration.CAN.ICAN;
+import team1502.configuration.CAN.Manufacturer;
+import team1502.configuration.Controllers.Accelerometer;
+import team1502.configuration.Controllers.GearToothSensor;
+import team1502.configuration.Controllers.Controller;
+import team1502.configuration.Controllers.GyroSensor;
+import team1502.configuration.Controllers.MotorController;
+import team1502.configuration.Controllers.PneumaticsController;
+import team1502.configuration.Factory.GyroPart;
+import team1502.configuration.Factory.Part;
+
 public class Devices {
+    private Robot _robot;
+    private HashMap<String, Part> _partMap = new HashMap<>(); 
 
-    public String name;
 
+    private Equipment _equipment;
+    
+    public String name; // ?
+    
+    
     public Devices() {}
+    public Devices(Equipment equipment) {}
+    public Devices(Robot robot) {_robot = robot;}
     public Devices(String name) {this.name = name;}
 
     // public Devices Common(Runnable fn) {
@@ -60,7 +81,7 @@ public class Devices {
     public Devices PneumaticsHub(String name) {
         return this;
     }
-    public Devices PH(String name, Function<PneumaticsHub, PneumaticsHub> fn) {
+    public Devices PH(String name, Function<PneumaticsController, PneumaticsController> fn) {
         return this;
     }
     public Devices Compressor(String name) {
@@ -85,6 +106,13 @@ public class Devices {
         return this;
     }
     public Devices SwerveDrive(Function<SwerveDrive, SwerveDrive> fn) {
+        // SwerveDrive swerveDrive = new SwerveDrive(this);
+        // swerveDrive.Install(fn);
+        // Part part = _robot.createPart(name);
+        // part = fn.apply(part);
+        // install(part);
+        // return this;
+
         return this;
     }
     public Devices Subsystem(String name, Function<Devices, Devices> fn) {
@@ -103,10 +131,10 @@ public class Devices {
 
     // these might be device-type: motor controller ???
     private HashMap<String, Controller> sensorMap = new HashMap<>(); 
-    public Devices CANSensor(String name, Function<CANSensor, Controller> fn) { //throws Exception {
+    public Devices CANSensor(String name, Function<GearToothSensor, Controller> fn) { //throws Exception {
         if (sensorMap.containsKey(name)) throw new IllegalArgumentException(name + " already defined for CAN sensor");
         
-        sensorMap.put(name, fn.apply(new CANSensor(name)));
+        sensorMap.put(name, fn.apply(new GearToothSensor(name)));
         return this;  
     }
         
@@ -118,12 +146,97 @@ public class Devices {
         return this;  
     }
         
-    private HashMap<String, Controller> gyroMap = new HashMap<>(); 
-    public Devices Gyro(String name, Function<Gyro, Controller> fn) { //throws Exception {
+    private HashMap<String, GyroSensor> gyroMap = new HashMap<>(); 
+    public Devices DefineGyro(SupportedDevices device, Function<GyroSensor, GyroSensor> fn) { //throws Exception {
+        var name = device.name();
         if (gyroMap.containsKey(name)) throw new IllegalArgumentException(name + " already defined for gyro");
         
-        gyroMap.put(name, fn.apply(new Gyro(name)));
+        gyroMap.put(name, (GyroSensor)fn.apply(new GyroSensor(name)).Device(device));
+        return this;
+    }
+
+    public GyroSensor CreateGyro(SupportedDevices device, Function<GyroSensor, ?> fn) { //throws Exception {
+        GyroSensor gyro = CreateGyro(device);
+        fn.apply(gyro);
+        return gyro;
+    }
+
+    public GyroSensor CreateGyro(SupportedDevices device) { //throws Exception {
+        var name = device.name();
+        if (gyroMap.containsKey(name)) throw new IllegalArgumentException(name + " already defined for gyro");
+        GyroSensor gyro =  (GyroSensor)(new GyroSensor(name).Device(device));
+        gyroMap.put(name, gyro);
+        return gyro;
+    }
+    
+    public Devices Gyro(String name, Function<GyroSensor, GyroSensor> fn) { //throws Exception {
+        if (gyroMap.containsKey(name)) throw new IllegalArgumentException(name + " already defined for gyro");        
+        gyroMap.put(name, fn.apply(new GyroSensor(name)));
         return this;  
+    }
+
+    public Devices GyroSensor(int canId) {
+        return this;
+    }
+
+    public GyroSensor getGyro(String name) {
+        return gyroMap.get(name);
+    }
+
+    public Devices Define(SupportedDevices device) {
+        switch (device) {
+            case Pigeon2:
+                CreateGyro(device, g -> g
+                    .Manufacturer(Manufacturer.CTRElectronics)
+                    .PowerProfile(0.4));
+                break;
+        
+            default:
+                break;
+        }
+        return this;
+    }
+    public Devices Define(DeviceType device) {
+        new Controller(device, null);
+        return this;
+    }
+
+    public Part getPart(String name) {
+        return _partMap.get(name);
+    }
+
+    private CanMap _canMap = new CanMap();
+    public CanMap getCanMap() {return _canMap;}
+
+    public Devices Install(String deviceId, String partName, Function<Part, Part> fn)
+    {        
+        Part part = _robot.createPart(partName);
+        part.name= deviceId;
+        part = fn.apply(part);
+        return install(part);
+    }
+    public Devices Install(String name, Function<Part, Part> fn)
+    {        
+        Part part = _robot.createPart(name);
+        part = fn.apply(part);
+        install(part);
+        return this;
+    }    
+
+    public Devices InstallGyro(String name, Function<GyroPart, Part> fn)
+    {        
+        GyroPart part = (GyroPart)_robot.createPart(name);
+        fn.apply(part);
+        install(part);
+        return this;
+    }    
+
+    private Devices install(Part part) {
+        _partMap.put(part.name, part);
+        if (part.hasCanInfo()) {
+            _canMap.install(part);
+        }
+        return this;
     }
 
 

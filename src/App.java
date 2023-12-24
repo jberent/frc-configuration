@@ -1,4 +1,5 @@
 //import static org.junit.jupiter.api.Assertions.assertEquals;
+import test.java.AppTest;
 
 import team1502.configuration.CANConfiguration;
 import team1502.configuration.Devices;
@@ -7,12 +8,16 @@ import team1502.configuration.Robot;
 import team1502.configuration.SupportedDevices;
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
+import team1502.configuration.Controllers.GyroSensor;
 
 public class App {
     public static void main(String[] args) throws Exception {
         var test = "null";
         if (args.length > 0 ) {
             test = args[0];
+        } else {
+            new AppTest().Test2();
+            return;
         }
         
         System.out.println("=== Hello, " + test + " ===");
@@ -61,10 +66,10 @@ public class App {
         Motor FrontLeftDriveMotor = new Motor("FLD");
         
         var CAN = new CANConfiguration();
-        CAN.Id(1, FrontLeftDriveMotor);
+        //CAN.Id(1, FrontLeftDriveMotor);
         //assertEquals(1, FrontLeftDriveMotor.GetCanId());
-        var canInfo = FrontLeftDriveMotor.GetCanInfo();
-        System.out.println(FrontLeftDriveMotor.Name + "(" + FrontLeftDriveMotor.GetCanId() + ") :" + canInfo.GetDeviceTypeId() + "-" + canInfo.GetManufacturerId());
+        var canInfo = FrontLeftDriveMotor.getCanInfo();
+        //System.out.println(FrontLeftDriveMotor.name + "(" + FrontLeftDriveMotor.getCanId() + ") :" + canInfo.getDeviceTypeId() + "-" + canInfo.getManufacturerId());
     }
     
     public static void Test2() {
@@ -152,7 +157,7 @@ public class App {
                 .Manufacturer(Manufacturer.CTRElectronics)
                 .Device(SupportedDevices.CANcoder)
                 .PowerProfile(265))
-            .Gyro("Pigeon2", cs -> cs // neo.brushless, CANSparkMax
+            .Gyro("Pigeon2", cs -> (GyroSensor)cs // neo.brushless, CANSparkMax
                 .Manufacturer(Manufacturer.CTRElectronics)
                 .Device(SupportedDevices.Pigeon2)
                 .PowerProfile(0.4))

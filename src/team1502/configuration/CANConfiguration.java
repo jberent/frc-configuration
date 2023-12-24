@@ -13,7 +13,7 @@ public class CANConfiguration extends ConfigurationItem{
             throw new Exception("Duplicate CAN ID");
         }
         Ids.put(id, canItem);
-        canItem.SetCanId(id);
+        canItem.setCanId(id);
         return this;
     }
 

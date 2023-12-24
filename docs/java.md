@@ -27,6 +27,8 @@ Put packages in director: `javac -d .\build\classes .\src\team1502\configuration
 run it: `java -cp .\build\classes App`
 
 # Manual Test
+Update launch.json to include "args"
+
 ```
 javac -d .\build\classes .\src\team1502\configuration\*.java .\src\team1502\configuration\CAN\*.java  src\*.java
 
