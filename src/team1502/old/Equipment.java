@@ -1,7 +1,9 @@
-package team1502.configuration;
+package team1502.old;
 
 import java.util.HashMap;
 
+import team1502.configuration.Robot;
+import team1502.configuration.SupportedDevices;
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
 import team1502.configuration.Controllers.Controller;
@@ -29,7 +31,7 @@ public class Equipment {
     }
 
     public Equipment Define(DeviceType device, Manufacturer manufacturer) {
-        return Add(new Controller(device,  manufacturer));
+        return Add(new Controller(device.toString(), device,  manufacturer));
     }
 
 }

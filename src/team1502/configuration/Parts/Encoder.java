@@ -1,6 +1,6 @@
-package team1502.configuration;
+package team1502.configuration.Parts;
 
-public class Encoder extends ConfigurationItem {
+public class Encoder extends Part {
 /*
  *   public static final Pigeon2 gyro = new Pigeon2(14);
  *   Same ctor for CANCoder

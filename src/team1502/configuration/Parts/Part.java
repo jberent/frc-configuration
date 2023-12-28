@@ -1,4 +1,4 @@
-package team1502.configuration.Factory;
+package team1502.configuration.Parts;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -9,20 +9,25 @@ import java.util.function.Function;
 
 import team1502.configuration.CAN.CanInfo;
 import team1502.configuration.CAN.ICAN;
-import team1502.configuration.PowerProfile;;
+import team1502.configuration.PowerProfile;
+import team1502.configuration.Builder.RobotBuilder;;
 
 public class Part implements ICAN {
     private HashMap<String, Object> _values = new HashMap<>();
     private ArrayList<Part> _pieces = new ArrayList<>();
     private ArrayList<String> _errorMessages = new ArrayList<>();
     //private HashMap<String, Part> _subParts = new HashMap<>();
-    
+    private RobotBuilder _robotBuilder;
+
     public String name;
     public Part() {}
-    public Part(String name) {
+    public Part(String name, RobotBuilder rb) {
         this.name = name;
+        _robotBuilder = rb;
     }
-    
+    public void setBuilder(RobotBuilder rb) {
+        _robotBuilder=rb;
+    }
     
     public Part Name(String name)
     {
@@ -35,14 +40,44 @@ public class Part implements ICAN {
         return this.setValue(name, detail) ;
     }
     
+    protected Part createPart(String newName, String partName) {
+        Part part = _robotBuilder.createPart(partName);
+        part.name = newName;
+        return part;
+    }
+
+    protected Part include(String newName, String partName, Function<Part, Part> fn) {
+        Part part = createPart(newName, partName);
+        addPart(part);
+        if (fn != null) {
+            fn.apply(part);
+        }
+        return part;
+    }
     
+    public Part Create(String partName) {
+        include(partName,partName,null);
+        return this;
+    }
+
+    public Part Include(String newName, String partName) {
+        include(newName, partName, null);
+        return this;
+    }
+
+    public Part Include(String newName, String partName, Function<Part, Part> fn) {
+        include(newName, partName, fn);
+        return this;
+    }
+
     public Part Part(String name, Function<Part, Part> fn) {
-        Part part = new Part(name);
+        Part part = new Part(name, _robotBuilder);
         fn.apply(part);
         addPart(part);
         //_partMap.put(name,  new PartBuilder<Part>(name, nm -> new Part(name), fn));
         return this;
     }
+
     public Part GearBox(Function<Part, Part> fn) {
         // get parent name for full path
         return Part("GearBox", fn);
@@ -62,7 +97,7 @@ public class Part implements ICAN {
         return this;
     }
     public Part Piece(String name, Function<Part, Part> fn) {
-        Part part = new Part(name);
+        Part part = new Part(name, _robotBuilder);
         fn.apply(part);
         addPiece(part);
         return this;
@@ -92,6 +127,10 @@ public class Part implements ICAN {
         return this;
     }
     
+    public Part Value(String valueName, Object value) {
+        return setValue(valueName, value);
+    }
+
     public Part setValue(String valueName, Object value) {
         _values.put(valueName, value);
         return this;

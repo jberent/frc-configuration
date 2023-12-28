@@ -4,8 +4,6 @@ import org.junit.jupiter.api.Test;
 
 import team1502.Wpi.CANSparkMaxLowLevel;
 import team1502.Wpi.CANSparkMax.IdleMode;
-import team1502.configuration.CANConfiguration;
-import team1502.configuration.Motor;
 import team1502.configuration.Robot;
 import team1502.configuration.SupportedDevices;
 import team1502.configuration.CAN.CanMap;
@@ -13,8 +11,10 @@ import team1502.configuration.CAN.CanInfo;
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
 import team1502.configuration.Controllers.GyroSensor;
-import team1502.configuration.Factory.GyroPart;
-import team1502.configuration.Factory.Part;
+import team1502.configuration.Parts.Part;
+// import team1502.old.CANConfiguration;
+// import team1502.old.Motor;
+//import team1502.configuration.Parts.GyroPart;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -23,7 +23,7 @@ import java.text.MessageFormat;
 import java.util.List;
 
 public class AppTest {
-
+/*
     @Test
     public void xTest1() throws Exception {
         Motor FrontLeftDriveMotor = new Motor();
@@ -33,6 +33,7 @@ public class AppTest {
         // assertEquals(1, FrontLeftDriveMotor.getCanId());
 
     }
+ */
 
     @Test
     public void Test2()
@@ -47,21 +48,21 @@ public class AppTest {
         
         assertEquals((int)robot2a.getPart("Pigeon2b").getCanInfo().deviceNumber,15);
         assertEquals(robot2a.getPart("Pigeon2b").getPowerProfile().channel, 9);
-        assertTrue(robot2a.getPart("Pigeon2b").getBoolean(GyroPart.ISREVERSED) == false);
+        assertTrue(robot2a.getPart("Pigeon2b").getBoolean(GyroSensor.ISREVERSED) == false);
 
         assertEquals((int)robot2a.getPart("Pigeon3").getCanInfo().deviceNumber,16);
         var tm = robot2a.getPart("TurningMotor");
 
         CanMap canMap = new CanMap();
-        Part ci1 = new Part("part 1").CanInfo(new CanInfo(DeviceType.Accelerometer, Manufacturer.CTRElectronics, 0));
-        Part ci2 = new Part("part 2").CanInfo(new CanInfo(DeviceType.Accelerometer, Manufacturer.CTRElectronics, 1));
-        Part ci3 = new Part("part 3").CanInfo(new CanInfo(DeviceType.GyroSensor, Manufacturer.CTRElectronics, 1));
-        Part ci4 = new Part("part 4").CanInfo(new CanInfo(DeviceType.GyroSensor, Manufacturer.KauaiLabs, 1));
+        Part ci1 = new Part("part 1",null).CanInfo(new CanInfo(DeviceType.Accelerometer, Manufacturer.CTRElectronics, 0));
+        Part ci2 = new Part("part 2",null).CanInfo(new CanInfo(DeviceType.Accelerometer, Manufacturer.CTRElectronics, 1));
+        Part ci3 = new Part("part 3",null).CanInfo(new CanInfo(DeviceType.GyroSensor, Manufacturer.CTRElectronics, 1));
+        Part ci4 = new Part("part 4",null).CanInfo(new CanInfo(DeviceType.GyroSensor, Manufacturer.KauaiLabs, 1));
         canMap.install(ci1);
         canMap.install(ci2);
         canMap.install(ci3);
         canMap.install(ci4);
-        canMap.install(new Part("part 5").CanInfo(new CanInfo(DeviceType.GyroSensor, Manufacturer.KauaiLabs, 1)));
+        canMap.install(new Part("part 5",null).CanInfo(new CanInfo(DeviceType.GyroSensor, Manufacturer.KauaiLabs, 1)));
     
         ShowCAN(canMap);
         ConfigRobot(robot2a);
@@ -127,12 +128,12 @@ public class AppTest {
     {
         var robot1a = CreateRobot1a();
         var robot1b = CreateRobot1b();
-        assertTrue(robot1a.getGyro("Pigeon2").deviceType == DeviceType.GyroSensor);
-        assertTrue(robot1a.getGyro("Pigeon2").manufacturer == Manufacturer.CTRElectronics);
-        assertEquals(robot1a.getGyro("Pigeon2").powerProfile.peakPower, 0.4);
+        assertTrue(robot1a.getPart("Pigeon2").getCanInfo().deviceType == DeviceType.GyroSensor);
+        assertTrue(robot1a.getPart("Pigeon2").getCanInfo().manufacturer == Manufacturer.CTRElectronics);
+        assertEquals(robot1a.getPart("Pigeon2").getPowerProfile().peakPower, 0.4);
         
-        assertTrue(robot1a.getGyro("Pigeon2").deviceType == robot1b.getGyro("Pigeon2").deviceType);
-        assertTrue(robot1a.getGyro("Pigeon2").manufacturer == robot1b.getGyro("Pigeon2").manufacturer);
+        assertTrue(robot1a.getPart("Pigeon2").getCanInfo().deviceType == robot1b.getPart("Pigeon2").getCanInfo().deviceType);
+        assertTrue(robot1a.getPart("Pigeon2").getCanInfo().manufacturer == robot1b.getPart("Pigeon2").getCanInfo().manufacturer);
     }
 
     public static void Log(Robot robot)
@@ -143,16 +144,10 @@ public class AppTest {
     static Robot CreateRobot1a() {
         return Robot
             .Create("robot_1a", r -> r
-            .Devices(hw -> hw
-                .Gyro("Pigeon2", g -> (GyroSensor)(g
-                    .Manufacturer(Manufacturer.CTRElectronics)
-                    .Device(DeviceType.GyroSensor)
+            .Parts(hw -> hw
+                .Gyro("Pigeon2", Manufacturer.CTRElectronics, g -> g
                     .PowerProfile(0.4))) 
-
-                //.Gyro("GYRO", "Pigeon2")
-
-            )            
-        );
+            );         
     } 
 
     static Robot CreateRobot2a() {
@@ -213,27 +208,27 @@ public class AppTest {
                     )
                 )
             )
-            .Devices(hw -> hw
-                .Install("Pigeon2", d -> d
-                    .setValue(GyroPart.ISREVERSED, true)
+            .Build(hw -> hw
+                .Build("Pigeon2", d -> d
+                    .setValue(GyroSensor.ISREVERSED, true)
                     .CanInfo(can -> can.Number(14))
                     .PowerProfile(p ->p.Channel(8))
                 )
-                .Install("Pigeon2b", "Pigeon2", d -> d
-                    .setValue(GyroPart.ISREVERSED, false)
+                .Build("Pigeon2b", "Pigeon2", d -> d
+                    .setValue(GyroSensor.ISREVERSED, false)
                     .CanInfo(can -> can.Number(15))
                     .PowerProfile(p ->p.Channel(9))
                 )
-                .InstallGyro("Pigeon3", d -> d
-                    .IsReversed(true)
+                .Build("Pigeon3", d -> d
+                    //.IsReversed(true)
                     .CanInfo(can -> can.Number(16))
                     .PowerProfile(p ->p.Channel(10))
                 )
-                .Install("DrivingMotor", m -> m
+                .Build("DrivingMotor", m -> m
                     .setValue("idleMode", IdleMode.kBrake)
                     .CanInfo(c -> c.Number(0))
                 )
-                .Install("TurningMotor", m -> m
+                .Build("TurningMotor", m -> m
                     .setValue("isReversed", true)
                     .setValue("idleMode", IdleMode.kCoast)
                     .CanInfo(c -> c.Number(1))
@@ -256,23 +251,15 @@ public class AppTest {
             )
         );                    
     }
-
-    static Robot CreateRobot1b() {
-        return Robot
-            .Create("robot_1b", r -> r
-            .Equipment(hw -> hw.Define(SupportedDevices.Pigeon2) 
-
-                //.Gyro(SupportedDevices.Pigeon2)
-
-            )
-            // .Devices(hw -> hw
-            //     .Gyro(14)
-            // )         
-        );
-    }
-    
-    //static void Gyro
-
+/*
+ * 
+        */
+ static Robot CreateRobot1b() {
+     return Robot
+     .Create("robot_1b", r -> r
+     .Build(SupportedDevices.Pigeon2));
+     
+ }
     static void CheckResults(Robot robot) {
 
     }

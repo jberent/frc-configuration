@@ -3,7 +3,7 @@ package team1502.configuration.Builder;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Function;
 
-import team1502.configuration.Factory.Part;
+import team1502.configuration.Parts.Part;
 
 // Information needed to build, maybe context
 public class PartBuilder<T extends Part> {
@@ -24,7 +24,7 @@ public class PartBuilder<T extends Part> {
         _buildFunction = fn;
     }
 
-    public T buildPart() {  //throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+    public T buildPart(RobotBuilder rb) {  //throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
         T part = null;
         if (_constructor != null) {
             part = _constructor.apply(_name);
@@ -38,6 +38,7 @@ public class PartBuilder<T extends Part> {
         
         // build part
         part.Name(_name);
+        part.setBuilder(rb);
         _buildFunction.apply(part);
         // part.buildParts(part);
         // // build sub-parts

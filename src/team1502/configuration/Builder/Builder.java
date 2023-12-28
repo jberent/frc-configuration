@@ -2,7 +2,7 @@ package team1502.configuration.Builder;
 
 import java.util.function.Function;
 
-import team1502.configuration.Factory.Part;
+import team1502.configuration.Parts.Part;
 
 public class Builder {
     private Builder _parent;

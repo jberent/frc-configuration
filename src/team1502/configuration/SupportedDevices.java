@@ -7,12 +7,13 @@ import team1502.configuration.Controllers.Controller;
 import team1502.configuration.Controllers.GyroSensor;
 
 public enum SupportedDevices {
-    MotorCANSparkMax ( "SparkMax", device -> new Controller("SparkMax", DeviceType.MotorController)),
+    MotorCANSparkMax ( "SparkMax", device -> new Controller("SparkMax", DeviceType.MotorController, Manufacturer.REVRobotics)),
     CANcoder("CANcoder", name-> new GyroSensor(name, Manufacturer.REVRobotics)),
     Pigeon2 (name -> new GyroSensor(name, Manufacturer.CTRElectronics, g -> g.PowerProfile(0.4)));
 
     public Function<String,Controller> defineEquipment;
     public String equipmentName;
+
     private SupportedDevices(String name, Function<String,Controller> create) {
        equipmentName = name;
        defineEquipment = create;

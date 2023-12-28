@@ -1,8 +1,9 @@
-package team1502.configuration.Factory;
+package team1502.configuration.Parts;
 
 import team1502.configuration.CAN.CanInfo;
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
+import team1502.configuration.Parts.Part;
 
 public class GyroPart extends Part {
 /*
@@ -20,10 +21,10 @@ public class GyroPart extends Part {
 
     public static final String ISREVERSED = "isReversed";
 
-    public GyroPart(String name, Manufacturer mfr) {
-        super(name);
-        this.CanInfo(new CanInfo(DeviceType.GyroSensor, mfr));
-    }
+    // public GyroPart(String name, Manufacturer mfr) {
+    //     super(name);
+    //     this.CanInfo(new CanInfo(DeviceType.GyroSensor, mfr));
+    // }
 
     public GyroPart IsReversed(boolean reversed) {
         setValue(ISREVERSED, reversed);

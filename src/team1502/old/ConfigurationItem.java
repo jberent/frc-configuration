@@ -1,5 +1,6 @@
-package team1502.configuration;
+package team1502.old;
 
+import team1502.configuration.PowerProfile;
 import team1502.configuration.CAN.CanInfo;
 
 public class ConfigurationItem {

@@ -7,8 +7,8 @@ public class ControllerBuilder extends Builder {
         //TODO Auto-generated constructor stub
     }
     
-    public ControllerBuilder CanNumber(int id) {
-        _part.canInfo(c->c.Number(id));
+    public ControllerBuilder CanNumber(int number) {
+        setCanNumber(number);
         return this;
     }
 }

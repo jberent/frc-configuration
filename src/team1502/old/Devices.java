@@ -1,10 +1,11 @@
-package team1502.configuration;
+package team1502.old;
 
 import java.util.HashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.spi.ResourceBundleControlProvider;
 
+import team1502.configuration.SupportedDevices;
 import team1502.configuration.CAN.CanMap;
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.ICAN;
@@ -15,13 +16,9 @@ import team1502.configuration.Controllers.Controller;
 import team1502.configuration.Controllers.GyroSensor;
 import team1502.configuration.Controllers.MotorController;
 import team1502.configuration.Controllers.PneumaticsController;
-import team1502.configuration.Factory.GyroPart;
-import team1502.configuration.Factory.Part;
 
 public class Devices {
     private Robot _robot;
-    private HashMap<String, Part> _partMap = new HashMap<>(); 
-
 
     private Equipment _equipment;
     
@@ -196,48 +193,15 @@ public class Devices {
         }
         return this;
     }
-    public Devices Define(DeviceType device) {
-        new Controller(device, null);
-        return this;
-    }
+    // public Devices Define(DeviceType device) {
+    //     new Controller(device, null);
+    //     return this;
+    // }
 
-    public Part getPart(String name) {
-        return _partMap.get(name);
-    }
 
     private CanMap _canMap = new CanMap();
     public CanMap getCanMap() {return _canMap;}
 
-    public Devices Install(String deviceId, String partName, Function<Part, Part> fn)
-    {        
-        Part part = _robot.createPart(partName);
-        part.name= deviceId;
-        part = fn.apply(part);
-        return install(part);
-    }
-    public Devices Install(String name, Function<Part, Part> fn)
-    {        
-        Part part = _robot.createPart(name);
-        part = fn.apply(part);
-        install(part);
-        return this;
-    }    
-
-    public Devices InstallGyro(String name, Function<GyroPart, Part> fn)
-    {        
-        GyroPart part = (GyroPart)_robot.createPart(name);
-        fn.apply(part);
-        install(part);
-        return this;
-    }    
-
-    private Devices install(Part part) {
-        _partMap.put(part.name, part);
-        if (part.hasCanInfo()) {
-            _canMap.install(part);
-        }
-        return this;
-    }
 
 
 }

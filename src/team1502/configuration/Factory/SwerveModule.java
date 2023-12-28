@@ -1,7 +1,8 @@
 package team1502.configuration.Factory;
 
-import team1502.configuration.Encoder;
-import team1502.configuration.Motor;
+import team1502.configuration.Parts.Encoder;
+import team1502.configuration.Parts.Part;
+import team1502.old.Motor;
 
 public class SwerveModule extends Part {
 
