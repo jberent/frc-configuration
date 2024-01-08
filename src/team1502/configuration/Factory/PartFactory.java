@@ -7,6 +7,7 @@ import team1502.configuration.Builder.PartBuilder;
 import team1502.configuration.Builder.RobotBuilder;
 import team1502.configuration.CAN.Manufacturer;
 import team1502.configuration.Controllers.GyroSensor;
+import team1502.configuration.Controllers.MotorController;
 import team1502.configuration.Parts.Part;
 
 public class PartFactory {
@@ -24,13 +25,18 @@ public class PartFactory {
         return this;
     }
 
-    public PartFactory Gyro(String name, Manufacturer mfr, Function<GyroSensor, Part> fn) {
-        _partMap.put(name, new PartBuilder<GyroSensor>(name, nm -> new GyroSensor(name, mfr), fn));
+    public PartFactory Gyro(String name, Manufacturer manufacturer, Function<GyroSensor, Part> fn) {
+        _partMap.put(name, new PartBuilder<GyroSensor>(name, nm -> new GyroSensor(name, manufacturer), fn));
         return this;
     }
 
     public PartBuilder getBuilder(String name) {
         return _partMap.get(name);
+    }
+
+    public PartFactory MotorController(String name, Manufacturer manufacturer, Function<MotorController, Part> fn) {
+        _partMap.put(name, new PartBuilder<MotorController>(name, nm -> new MotorController(name, manufacturer), fn));
+        return this;
     }
 
     public PartFactory MotorController(String name, Function<Part, Part> fn) {

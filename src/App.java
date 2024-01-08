@@ -15,7 +15,7 @@ public class App {
         if (args.length > 0 ) {
             test = args[0];
         } else {
-            new AppTest().Test2();
+            new AppTest().Test1();
             return;
         }
         

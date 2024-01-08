@@ -35,6 +35,37 @@ public class AppTest {
     }
  */
 
+    public void Test1() {
+        var robot1a = SwerveDriveVebose.CreateRobot1a();
+        var canMap = robot1a.getCanMap();
+        var gyro = robot1a.getPart("Pigeon2");
+        var turn = robot1a.getPart("TurningMotor");
+        var drive = robot1a.getPart("DrivingMotor");
+
+        System.out.println();
+        ShowCAN(canMap);
+        System.out.println();
+        System.out.println("=== ROBOT CONFIG ===");
+        ShowGyro(gyro);
+        ShowMotor(turn);
+        ShowMotor(drive);
+
+        var robot1b = SwerveDriveVebose.CreateRobot1b();
+        canMap = robot1b.getCanMap();
+        gyro = robot1b.getPart("Pigeon2");
+        turn = robot1b.getPart("TurningMotor");
+        drive = robot1b.getPart("DrivingMotor");
+
+        System.out.println();
+        ShowCAN(canMap);
+        System.out.println();
+        System.out.println("=== ROBOT CONFIG ===");
+        ShowGyro(gyro);
+        ShowMotor(turn);
+        ShowMotor(drive);
+
+    }
+
     @Test
     public void Test2()
     {
@@ -84,9 +115,10 @@ public class AppTest {
 
     private void ShowMotor(Part part)
     {
+        var motor = part.getPart("Motor");
         System.out.println(MessageFormat.format("public static final boolean {0}Reversed = {1};", part.name, part.getBoolean("isReversed") ));
         System.out.println(MessageFormat.format("public static final CANSparkMax.IdleMode {0}Brake = IdleMode.{1};", part.name, part.getValue("idleMode") ));
-        System.out.println(MessageFormat.format("public static final CANSparkMax {0} = new CANSparkMax({1}, CANSparkMaxLowLevel.MotorType.{2});", part.name, part.getCanId(), part.getPart("NEO").getValue("motorType") ));
+        System.out.println(MessageFormat.format("public static final CANSparkMax {0} = new CANSparkMax({1}, CANSparkMaxLowLevel.MotorType.{2});", part.name, part.getCanId(), motor.getValue("motorType") ));
         
         var gearBox = part.getPart("GearBox");
         var stages = gearBox.getPart("Stages").getPieces();
@@ -96,7 +128,7 @@ public class AppTest {
         Part.println(");");
 
         double _gearRatio = part.getGearRatio();
-        Part.println("// computed as: 1/" + _gearRatio);
+        Part.println("// computed as: 1/" + _gearRatio + " = " + (1/_gearRatio));
 
     
     }

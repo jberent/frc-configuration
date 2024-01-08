@@ -56,12 +56,19 @@ public class Part implements ICAN {
     }
     
     public Part Create(String partName) {
-        include(partName,partName,null);
+        Part part = _robotBuilder.createPart(partName);
+        return part;
+    }
+
+    public Part Install(String newName, String partName) {
+        include(newName, partName, null);
         return this;
     }
 
-    public Part Include(String newName, String partName) {
-        include(newName, partName, null);
+    public Part Install(String newName, Function<Part, Part> fn) {
+        var part = fn.apply(this);
+        part.name = newName;
+        addPart(part);
         return this;
     }
 
@@ -74,7 +81,6 @@ public class Part implements ICAN {
         Part part = new Part(name, _robotBuilder);
         fn.apply(part);
         addPart(part);
-        //_partMap.put(name,  new PartBuilder<Part>(name, nm -> new Part(name), fn));
         return this;
     }
 
