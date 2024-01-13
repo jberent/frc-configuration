@@ -122,7 +122,7 @@ public class Devices {
     public Devices MotorController(String name, Function<MotorController, Controller> fn) { //throws Exception {
         if (motorMap.containsKey(name)) throw new IllegalArgumentException(name + " already defined for MotorController");
         
-        motorMap.put(name, fn.apply(new MotorController(name)));
+        motorMap.put(name, fn.apply(new MotorController(name, Manufacturer.REVRobotics)));
         return this;  
     }
 

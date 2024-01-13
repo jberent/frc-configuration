@@ -75,16 +75,16 @@ public final class SwerveDriveVebose {
                 )
             )
             .Build(hw -> hw
-                .Build("Pigeon2", d -> d
+                .Part("Pigeon2", d -> d
                     .setValue(GyroSensor.ISREVERSED, true)
                     .CanInfo(can -> can.Number(14))
                     .PowerProfile(p ->p.Channel(8))
                 )
-                .Build("DrivingMotor", m -> m
+                .Part("DrivingMotor", m -> m
                     .setValue("idleMode", IdleMode.kBrake)
                     .CanInfo(c -> c.Number(0))
                 )
-                .Build("TurningMotor", m -> m
+                .Part("TurningMotor", m -> m
                     .setValue("isReversed", true)
                     .setValue("idleMode", IdleMode.kCoast)
                     .CanInfo(c -> c.Number(1))
@@ -148,7 +148,7 @@ public final class SwerveDriveVebose {
                 )
             )
             .Build(hw -> hw
-                .Build("Pigeon2", d -> d
+                .Gyro("Pigeon2", d -> d
                     .setValue(GyroSensor.ISREVERSED, true)
                     .CanInfo(can -> can.Number(14))
                     .PowerProfile(p ->p.Channel(8))

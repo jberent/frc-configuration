@@ -266,21 +266,21 @@ public class AppTest {
                     .CanInfo(c -> c.Number(1))
                 )
             )
-            .Build(hw->hw
-                .SwerveDrive(swerve->swerve
-                    .SwerveModule("Front.Left", sm->sm
-                        .MotorController("DrivingMotor", m -> m
-                            .IdleMode(IdleMode.kBrake)
-                            .CanNumber(0)
-                        )
-                        .MotorController("TurningMotor", m -> m
-                            .IdleMode(IdleMode.kCoast)
-                            .CanNumber(1)
-                        )
-                        .Reversed()
-                    )
-                )
-            )
+            // .Build(hw->hw
+            //     .SwerveDrive(swerve->swerve
+            //         .SwerveModule("Front.Left", sm->sm
+            //             .MotorController("DrivingMotor", m -> m
+            //                 .IdleMode(IdleMode.kBrake)
+            //                 .CanNumber(0)
+            //             )
+            //             .MotorController("TurningMotor", m -> m
+            //                 .IdleMode(IdleMode.kCoast)
+            //                 .CanNumber(1)
+            //             )
+            //             .Reversed()
+            //         )
+            //     )
+            // )
         );                    
     }
 /*

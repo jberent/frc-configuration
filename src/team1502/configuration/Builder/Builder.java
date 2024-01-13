@@ -13,7 +13,7 @@ public class Builder {
     }
 
     public RobotBuilder getRobotBuilder() {
-        return _parent == null ? (RobotBuilder)this : _parent.getRobotBuilder();
+        return null; //_parent == null ? (RobotBuilder)this : _parent.getRobotBuilder();
     }
 
     public Part createPart(String name) {

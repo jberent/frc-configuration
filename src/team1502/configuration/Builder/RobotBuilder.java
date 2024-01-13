@@ -5,15 +5,16 @@ import java.util.function.Function;
 
 import team1502.configuration.CAN.CanMap;
 import team1502.configuration.Parts.Part;
+import team1502.configuration.Controllers.GyroSensor;
 import team1502.configuration.Factory.PartFactory;
 
-public class RobotBuilder extends Builder{
+public class RobotBuilder /*extends Builder*/{
     private PartFactory _partFactory;
     private HashMap<String, Part> _partMap = new HashMap<>(); 
     private CanMap _canMap = new CanMap();
     
     private RobotBuilder(PartFactory partFactory) {
-        super(null);
+        //super(null);
         _partFactory = partFactory;
     }
 
@@ -35,14 +36,18 @@ public class RobotBuilder extends Builder{
 
     public CanMap getCanMap() {return _canMap;}
 
-    @Override
-    public Part createPart(String name) {
-        var partBuilder = _partFactory.getBuilder(name);
+    //@Override
+    private Part createPart(String newName, String partName) {
+        var partBuilder = _partFactory.getBuilder(partName);
         Part part = partBuilder.buildPart(this);
+        part.name= newName;
         return part;
     }
+    private Part createPart(String partName) {
+        return createPart(partName, partName);
+    }
 
-    @Override
+    //@Override
     protected void install(Part part) {
         _partMap.put(part.name, part);
         if (part.hasCanInfo()) {
@@ -50,10 +55,35 @@ public class RobotBuilder extends Builder{
         }
     }
 
-
-    public RobotBuilder SwerveDrive(Function<SwerveBuilder, SwerveBuilder> fn) {
-        var swerve = new SwerveBuilder(this);
-        fn.apply(swerve);
+    public RobotBuilder Build(String newName, String partName, Function<Part, Part> fn)
+    {        
+        var part = createPart(newName, partName);
+        fn.apply(part);
+        install(part);
         return this;
     }
+
+    public RobotBuilder Build(String name, Function<Part, Part> fn)
+    {        
+        return Build(name, name, fn);
+    }    
+
+    public RobotBuilder Part(String name, Function<Part, Part> fn)
+    {        
+        return Build(name, name, fn);
+    }    
+    public RobotBuilder GyroSensor(String name, int canNumber, Function<GyroSensor, Part> fn)
+    {        
+        var part = createPart(name);
+        fn.apply(part);
+        install(part);
+        return this;
+    }    
+
+
+    // public RobotBuilder SwerveDrive(Function<SwerveBuilder, SwerveBuilder> fn) {
+    //     var swerve = new SwerveBuilder(this);
+    //     fn.apply(swerve);
+    //     return this;
+    // }
 }

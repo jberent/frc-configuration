@@ -10,7 +10,7 @@ import team1502.configuration.Factory.DeviceFactory;
 import team1502.configuration.Parts.Part;
 import team1502.configuration.Factory.PartFactory;
 
-public class Robot {
+public class Robot /*extends Part*/ {
 
     public String name;
     private PartFactory _partFactory = new PartFactory();
@@ -42,13 +42,21 @@ public class Robot {
         return this;
     }
 
+    // public Robot Build2(String name, Function<Part, Part> fn) {
+    //     var builder = _partFactory.getBuilder(name);
+    //     Part part = builder.buildPart(_robotBuilder);
+    //     fn.apply(part);
+    //     addPart(part);
+    //     return this;   
+    // }
+
     public Part createPart(String name) {
         var builder = _partFactory.getBuilder(name);
         Part part = builder.buildPart(_robotBuilder);
         return part;
     }
 
-    public Robot Build(Function<RobotBuilder, Builder> fn) {
+    public Robot Build(Function<RobotBuilder, RobotBuilder> fn) {
         if (_robotBuilder == null) {
             _robotBuilder = RobotBuilder.Create(_partFactory);
         }
