@@ -1,8 +1,11 @@
-package team1502.configuration.Parts;
+package team1502.configuration.Builder;
 
-public class Encoder extends Part {
-/*
- *   public static final Pigeon2 gyro = new Pigeon2(14);
+import java.util.function.Function;
+
+public class Encoder extends Builder {
+  private Function<Encoder, Builder> buildFunction;
+  /*
+ *   public static final Pigeon2 Encoder = new Pigeon2(14);
  *   Same ctor for CANCoder
  * 
      driveEncoder = driveMotor.getEncoder();
@@ -22,4 +25,16 @@ public class Encoder extends Part {
     this.absEncoder.configMagnetOffset(-absOffset);
 
  */
+        //Define
+        public Encoder(String name, Function<Encoder, Builder> fn) {
+          super("EncoderSensor", name, null);
+          buildFunction = fn;
+      }
+  
+      //Build
+      public Encoder(Function<Encoder, Builder> fn) {
+          super("EncoderSensor");
+          buildFunction = fn;
+      }
+
 }

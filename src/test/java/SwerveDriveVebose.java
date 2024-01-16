@@ -5,12 +5,39 @@ import team1502.Wpi.CANSparkMaxLowLevel;
 import team1502.configuration.Robot;
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
-import team1502.configuration.Controllers.GyroSensor;
 
 public final class SwerveDriveVebose {
+    public static Robot CreateRobot0a() { return Robot
+        .Create("robot_0", r -> r
+            .Parts(define -> define
+                .Define("NEO", n -> n
+                    .Value("motorType", CANSparkMaxLowLevel.MotorType.kBrushless)
+                )
+            )
+            .Build(hw -> hw
+                .Build("NEO", p -> p)
+            )
+            //.Values(expr -> expr)
+        );
+    }
+
+    public static Robot CreateRobot0b() { return Robot
+        .Create("robot_0", r -> r
+            .Parts(define -> define
+                .Motor("NEO", n -> n
+                    .MotorType(CANSparkMaxLowLevel.MotorType.kBrushless)
+                )
+            )
+            .Build(hw -> hw
+                .Motor("NEO", m -> m)
+            )
+        );
+    }
+    
     public static Robot CreateRobot1a() {
         return Robot
             .Create("robot_1a", r -> r
+            /*
             .Parts(define -> define
                 .Part("Pigeon2", p -> p
                     .CanInfo(c -> c
@@ -90,11 +117,13 @@ public final class SwerveDriveVebose {
                     .CanInfo(c -> c.Number(1))
                 )
             )
+         */
         );                    
     }
     public static Robot CreateRobot1b() {
         return Robot
             .Create("robot_1b", r -> r
+            /*
             .Parts(define -> define
                 .Gyro("Pigeon2", Manufacturer.CTRElectronics, p -> p
                     .IsReversed(false)
@@ -163,7 +192,7 @@ public final class SwerveDriveVebose {
                     .CanInfo(c -> c.Number(1))
                 )
             )
-        );                    
+ */        );                    
     }
     
 }

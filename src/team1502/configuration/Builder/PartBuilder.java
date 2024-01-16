@@ -12,11 +12,11 @@ public class PartBuilder<T extends Part> {
     private Function<T, Part> _buildFunction; 
     private String _name;
 
-    public PartBuilder(String name, Class<T> genericClass, Function<T, Part> fn) {
-        _name = name;
-        _class = genericClass;
-        _buildFunction = fn;
-    }
+    // public PartBuilder(String name, Class<T> genericClass, Function<T, Part> fn) {
+    //     _name = name;
+    //     _class = genericClass;
+    //     _buildFunction = fn;
+    // }
 
     public PartBuilder(String name, Function<String, T> ctor, Function<T, Part> fn) {
         _name = name;

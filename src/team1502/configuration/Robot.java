@@ -41,7 +41,16 @@ public class Robot /*extends Part*/ {
         fn.apply(_partFactory);
         return this;
     }
-
+    
+    public Robot Build(Function<RobotBuilder, RobotBuilder> fn) {
+        if (_robotBuilder == null) {
+            _robotBuilder = RobotBuilder.Create(_partFactory);
+        }
+        fn.apply(_robotBuilder);
+        return this;
+    }
+/*
+ * 
     // public Robot Build2(String name, Function<Part, Part> fn) {
     //     var builder = _partFactory.getBuilder(name);
     //     Part part = builder.buildPart(_robotBuilder);
@@ -55,14 +64,9 @@ public class Robot /*extends Part*/ {
         Part part = builder.buildPart(_robotBuilder);
         return part;
     }
+ */
 
-    public Robot Build(Function<RobotBuilder, RobotBuilder> fn) {
-        if (_robotBuilder == null) {
-            _robotBuilder = RobotBuilder.Create(_partFactory);
-        }
-        fn.apply(_robotBuilder);
-        return this;
-    }
+/*
 
     public Robot Build(SupportedDevices device) {
         var p = device.createEquipment();
@@ -79,7 +83,6 @@ public class Robot /*extends Part*/ {
         return this;
     }
 
-/*
     
     // public Robot SwerveDrive(Function<SwerveDrive, SwerveDrive> fn) {
         //     fn.apply(_devices);

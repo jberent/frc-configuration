@@ -1,13 +1,14 @@
-package team1502.configuration.Controllers;
+package team1502.configuration.Builder.Controllers;
 import team1502.configuration.PowerProfile;
 import team1502.configuration.SupportedDevices;
+import team1502.configuration.Builder.Builder;
 import team1502.configuration.CAN.CanInfo;
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
 import team1502.configuration.Parts.Part;
 
 // a CAN controller of a certain type, a template (or definition?)
-public class Controller extends Part {
+public class Controller extends Builder {
     // public DeviceType deviceType; // for CAN assignments
     // public Manufacturer manufacturer; // for CAN assignments
     // public String name;
@@ -15,11 +16,14 @@ public class Controller extends Part {
 
     
     public Controller(String name, DeviceType deviceType) {
-        CanInfo(new CanInfo(deviceType, null));
+        super(deviceType.toString());
+        //CanInfo(new CanInfo(deviceType, null));
     }
     public Controller(String name, DeviceType deviceType, Manufacturer manufacturer) {
-        CanInfo(new CanInfo(deviceType, manufacturer));
+        super(deviceType.toString());
+        //CanInfo(new CanInfo(deviceType, manufacturer));
     }
+/*
     public Controller Manufacturer(Manufacturer manufacturer) {
         CanInfo(i->i.Manufacturer(manufacturer));
         return this;
@@ -30,7 +34,6 @@ public class Controller extends Part {
         return this;
     }
 
-/*
     public Controller(String name, double power) {
         this.PowerProfile(power);
     }

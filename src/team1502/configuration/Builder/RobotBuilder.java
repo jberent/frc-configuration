@@ -3,14 +3,15 @@ package team1502.configuration.Builder;
 import java.util.HashMap;
 import java.util.function.Function;
 
+import team1502.configuration.Builder.Controllers.GyroSensor;
 import team1502.configuration.CAN.CanMap;
 import team1502.configuration.Parts.Part;
-import team1502.configuration.Controllers.GyroSensor;
 import team1502.configuration.Factory.PartFactory;
 
-public class RobotBuilder /*extends Builder*/{
+public class RobotBuilder implements IBuild /*extends Builder*/{
     private PartFactory _partFactory;
     private HashMap<String, Part> _partMap = new HashMap<>(); 
+    private HashMap<String, Builder> _partMap2 = new HashMap<>(); // built parts wrapped in builder
     private CanMap _canMap = new CanMap();
     
     private RobotBuilder(PartFactory partFactory) {
@@ -30,16 +31,18 @@ public class RobotBuilder /*extends Builder*/{
     }
 
 
+    @Override // IBuild
     public Part getPart(String name) {
         return _partMap.get(name);
     }
 
     public CanMap getCanMap() {return _canMap;}
-
-    //@Override
-    private Part createPart(String newName, String partName) {
-        var partBuilder = _partFactory.getBuilder(partName);
-        Part part = partBuilder.buildPart(this);
+/*
+ * 
+    @Override // IBuild
+    public Part createPart(String newName, String partName) {
+        var builder = _partFactory.getBuilder(partName);
+        Part part = builder.build((IBuild)this, newName);
         part.name= newName;
         return part;
     }
@@ -47,6 +50,7 @@ public class RobotBuilder /*extends Builder*/{
         return createPart(partName, partName);
     }
 
+ */
     //@Override
     protected void install(Part part) {
         _partMap.put(part.name, part);
@@ -55,6 +59,44 @@ public class RobotBuilder /*extends Builder*/{
         }
     }
 
+    public void install(Builder builder) {
+        _partMap2.put(builder.getName(), builder);
+    }
+
+    public Builder getInstalled(String name) {
+        return _partMap2.get(name);
+    }
+
+    private Builder getBuilder(String partName) {
+        var builder = getInstalled(partName);
+        if (builder == null) {
+            builder = _partFactory.getBuilder(partName);
+            builder.create((IBuild)this, partName);
+            builder.install((IBuild)this);
+        }
+        return builder;
+    }
+    
+    private Builder modifyBuilder(String partName, Function<? extends Builder, Builder> fn) {
+        var builder = getBuilder(partName);
+        builder.apply(fn);
+        return builder;
+    }
+
+    
+    public RobotBuilder Build(String partName, Function<Builder, Builder> fn) {
+        modifyBuilder(partName, fn);
+        return this;
+
+    }
+
+    public RobotBuilder Motor(String partName, Function<Motor, Builder> fn) {        
+        modifyBuilder(partName, fn);
+        return this;
+    }    
+
+/*
+ * 
     public RobotBuilder Build(String newName, String partName, Function<Part, Part> fn)
     {        
         var part = createPart(newName, partName);
@@ -71,15 +113,16 @@ public class RobotBuilder /*extends Builder*/{
     public RobotBuilder Part(String name, Function<Part, Part> fn)
     {        
         return Build(name, name, fn);
-    }    
-    public RobotBuilder GyroSensor(String name, int canNumber, Function<GyroSensor, Part> fn)
-    {        
-        var part = createPart(name);
-        fn.apply(part);
-        install(part);
-        return this;
-    }    
+    }
 
+ */
+    // public RobotBuilder GyroSensor(String name, int canNumber, Function<GyroSensor, Part> fn)
+    // {        
+    //     var part = createPart(name);
+    //     fn.apply(part);
+    //     install(part);
+    //     return this;
+    // }    
 
     // public RobotBuilder SwerveDrive(Function<SwerveBuilder, SwerveBuilder> fn) {
     //     var swerve = new SwerveBuilder(this);

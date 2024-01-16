@@ -1,4 +1,4 @@
-package team1502.configuration.Controllers;
+package team1502.configuration.Builder.Controllers;
 
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
@@ -10,7 +10,7 @@ public class MotorController extends Controller {
     }
 
     public MotorController Motor(String partName) {
-        include("Motor", partName, null);
+        //include("Motor", partName, null);
         return this;
     }
 }

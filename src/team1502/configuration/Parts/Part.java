@@ -39,7 +39,7 @@ public class Part implements ICAN {
     {
         return this.setValue(name, detail) ;
     }
-    
+/*
     protected Part createPart(String newName, String partName) {
         Part part = _robotBuilder.createPart(partName);
         part.name = newName;
@@ -76,6 +76,7 @@ public class Part implements ICAN {
         include(newName, partName, fn);
         return this;
     }
+ */    
 
     public Part Part(String name, Function<Part, Part> fn) {
         Part part = new Part(name, _robotBuilder);

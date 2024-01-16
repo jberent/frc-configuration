@@ -6,11 +6,11 @@ import team1502.Wpi.CANSparkMaxLowLevel;
 import team1502.Wpi.CANSparkMax.IdleMode;
 import team1502.configuration.Robot;
 import team1502.configuration.SupportedDevices;
+import team1502.configuration.Builder.Controllers.GyroSensor;
 import team1502.configuration.CAN.CanMap;
 import team1502.configuration.CAN.CanInfo;
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
-import team1502.configuration.Controllers.GyroSensor;
 import team1502.configuration.Parts.Part;
 // import team1502.old.CANConfiguration;
 // import team1502.old.Motor;
@@ -34,6 +34,9 @@ public class AppTest {
 
     }
  */
+    public void Test0() {
+        var robot1a = SwerveDriveVebose.CreateRobot0a();
+    }
 
     public void Test1() {
         var robot1a = SwerveDriveVebose.CreateRobot1a();
@@ -175,16 +178,16 @@ public class AppTest {
 
     static Robot CreateRobot1a() {
         return Robot
-            .Create("robot_1a", r -> r
+            .Create("robot_1a", r -> r/*
             .Parts(hw -> hw
-                .Gyro("Pigeon2", Manufacturer.CTRElectronics, g -> g
-                    .PowerProfile(0.4))) 
+                .Gyro("Pigeon2", Manufacturer.CTRElectronics, g -> null
+                     .PowerProfile(0.4))) */
             );         
     } 
 
     static Robot CreateRobot2a() {
         return Robot
-            .Create("robot_1a", r -> r
+            .Create("robot_1a", r -> r/*
             .Parts(define -> define
                 .Part("Pigeon2", p -> p
                     .setValue("isReversed", false)
@@ -194,9 +197,9 @@ public class AppTest {
                     .PowerProfile(w -> w
                         .PeakPower(0.4))
                 )
-                .Gyro("Pigeon3", Manufacturer.CTRElectronics, g -> g
+                .Gyro("Pigeon3", Manufacturer.CTRElectronics, g -> null
                     .IsReversed(true)
-                    .CanInfo(c -> c.Number(16))
+                     .CanInfo(c -> c.Number(16))
                 )
                 .Part("TurningMotor", m -> m
                     .Part("NEO", n -> n
@@ -238,9 +241,9 @@ public class AppTest {
                         .Gear("Stage2", 27, 17)
                         .Gear("Stage3", 15, 45)
                     )
-                )
+                )*/
             )
-            .Build(hw -> hw
+            .Build(hw -> hw /*
                 .Build("Pigeon2", d -> d
                     .setValue(GyroSensor.ISREVERSED, true)
                     .CanInfo(can -> can.Number(14))
@@ -264,8 +267,8 @@ public class AppTest {
                     .setValue("isReversed", true)
                     .setValue("idleMode", IdleMode.kCoast)
                     .CanInfo(c -> c.Number(1))
-                )
-            )
+                ) 
+            )*/
             // .Build(hw->hw
             //     .SwerveDrive(swerve->swerve
             //         .SwerveModule("Front.Left", sm->sm
@@ -289,7 +292,7 @@ public class AppTest {
  static Robot CreateRobot1b() {
      return Robot
      .Create("robot_1b", r -> r
-     .Build(SupportedDevices.Pigeon2));
+     /*.Build(SupportedDevices.Pigeon2) */);
      
  }
     static void CheckResults(Robot robot) {

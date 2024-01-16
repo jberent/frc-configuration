@@ -1,22 +1,14 @@
-package team1502.configuration.Controllers;
+package team1502.configuration.Builder;
 
 import java.util.function.Function;
 
+import team1502.configuration.CAN.CanInfo;
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
+import team1502.configuration.Parts.Part;
 
-public class GyroSensor extends Controller {
-    public GyroSensor(String name) {
-        super(name, DeviceType.GyroSensor);
-    }
-    public GyroSensor(String name, Manufacturer manufacturer) {
-        super(name, DeviceType.GyroSensor, manufacturer);
-    }
-    public GyroSensor(String name, Manufacturer manufacturer, Function<GyroSensor,?> fn) {
-        super(name, DeviceType.GyroSensor, manufacturer);
-        fn.apply(this);
-    }
-
+public class Gyro extends Builder {
+    private Function<Gyro, Builder> buildFunction;
 /*
     // Pigeon2 configuration items:
     public double MountPoseYaw = 0;
@@ -31,7 +23,25 @@ public class GyroSensor extends Controller {
 */
 
     public static final String ISREVERSED = "isReversed";
-    public GyroSensor IsReversed(boolean reversed) {
+
+        //Define
+        public Gyro(String name, Function<Gyro, Builder> fn) {
+            super("GyroSensor", name, null);
+            buildFunction = fn;
+        }
+    
+        //Build
+        public Gyro(Function<Gyro, Builder> fn) {
+            super("GyroSensor");
+            buildFunction = fn;
+        }
+    
+    // public GyroPart(String name, Manufacturer mfr) {
+    //     super(name);
+    //     this.CanInfo(new CanInfo(DeviceType.GyroSensor, mfr));
+    // }
+
+    public Gyro IsReversed(boolean reversed) {
         setValue(ISREVERSED, reversed);
         return this;
     }
@@ -39,5 +49,4 @@ public class GyroSensor extends Controller {
     public Boolean isReversed() {
         return getBoolean(ISREVERSED);
     }
-
 }

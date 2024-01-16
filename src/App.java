@@ -1,12 +1,8 @@
 //import static org.junit.jupiter.api.Assertions.assertEquals;
 import test.java.AppTest;
-import team1502.configuration.Robot;
-import team1502.configuration.SupportedDevices;
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
-import team1502.configuration.Controllers.GyroSensor;
 import team1502.old.CANConfiguration;
-import team1502.old.Devices;
 import team1502.old.Motor;
 
 public class App {
@@ -15,7 +11,7 @@ public class App {
         if (args.length > 0 ) {
             test = args[0];
         } else {
-            new AppTest().Test1();
+            new AppTest().Test0();
             return;
         }
         

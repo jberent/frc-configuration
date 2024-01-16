@@ -1,11 +1,22 @@
-package team1502.configuration.Parts;
+package team1502.configuration.Builder.Controllers;
 
-import team1502.configuration.CAN.CanInfo;
+import java.util.function.Function;
+
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
-import team1502.configuration.Parts.Part;
 
-public class GyroPart extends Part {
+public class GyroSensor extends Controller {
+    public GyroSensor(String name) {
+        super(name, DeviceType.GyroSensor);
+    }
+    public GyroSensor(String name, Manufacturer manufacturer) {
+        super(name, DeviceType.GyroSensor, manufacturer);
+    }
+    public GyroSensor(String name, Manufacturer manufacturer, Function<GyroSensor,?> fn) {
+        super(name, DeviceType.GyroSensor, manufacturer);
+        fn.apply(this);
+    }
+
 /*
     // Pigeon2 configuration items:
     public double MountPoseYaw = 0;
@@ -20,13 +31,7 @@ public class GyroPart extends Part {
 */
 
     public static final String ISREVERSED = "isReversed";
-
-    // public GyroPart(String name, Manufacturer mfr) {
-    //     super(name);
-    //     this.CanInfo(new CanInfo(DeviceType.GyroSensor, mfr));
-    // }
-
-    public GyroPart IsReversed(boolean reversed) {
+    public GyroSensor IsReversed(boolean reversed) {
         setValue(ISREVERSED, reversed);
         return this;
     }
@@ -34,4 +39,5 @@ public class GyroPart extends Part {
     public Boolean isReversed() {
         return getBoolean(ISREVERSED);
     }
+
 }

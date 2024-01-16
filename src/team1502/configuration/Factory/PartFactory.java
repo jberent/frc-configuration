@@ -3,22 +3,42 @@ package team1502.configuration.Factory;
 import java.util.HashMap;
 import java.util.function.Function;
 
+import team1502.configuration.Builder.Builder;
+import team1502.configuration.Builder.IBuild;
+import team1502.configuration.Builder.Motor;
 import team1502.configuration.Builder.PartBuilder;
 import team1502.configuration.Builder.RobotBuilder;
+import team1502.configuration.Builder.Controllers.GyroSensor;
+import team1502.configuration.Builder.Controllers.MotorController;
 import team1502.configuration.CAN.Manufacturer;
-import team1502.configuration.Controllers.GyroSensor;
-import team1502.configuration.Controllers.MotorController;
 import team1502.configuration.Parts.Part;
 
 public class PartFactory {
     private HashMap<String, PartBuilder> _partMap = new HashMap<>(); 
+    private HashMap<String, Builder> _builderMap = new HashMap<>(); 
     
+    private IBuild _build;
     private RobotBuilder _robotBuilder;
     public void setBuilder(RobotBuilder rb) {
         _robotBuilder=rb;
     }
     
+    public PartFactory Define(String name, Function<Builder, Builder> fn) {
+        _builderMap.put(name,  new Builder(name, _build, fn));
+        return this;
+    }
 
+    public Builder getBuilder(String name) {
+        return _builderMap.get(name);
+    }
+
+    public PartFactory Motor(String name, Function<Motor, Builder> fn) {
+        _builderMap.put(name,  new Motor(name, fn));
+        return this;
+    }
+
+    /*
+     * 
     public PartFactory Part(String name, Function<Part, Part> fn) {
         _partMap.put(name,  new PartBuilder<Part>(name, nm -> new Part(name, _robotBuilder), fn));
 
@@ -30,10 +50,6 @@ public class PartFactory {
         return this;
     }
 
-    public PartBuilder getBuilder(String name) {
-        return _partMap.get(name);
-    }
-
     public PartFactory MotorController(String name, Manufacturer manufacturer, Function<MotorController, Part> fn) {
         _partMap.put(name, new PartBuilder<MotorController>(name, nm -> new MotorController(name, manufacturer), fn));
         return this;
@@ -43,4 +59,5 @@ public class PartFactory {
         // get parent name for full path
         return Part(name, fn);
     }
+     */
 }
