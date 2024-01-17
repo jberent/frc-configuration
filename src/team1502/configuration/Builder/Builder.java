@@ -2,6 +2,8 @@ package team1502.configuration.Builder;
 
 import java.util.function.Function;
 
+import team1502.configuration.PowerProfile;
+import team1502.configuration.CAN.CanInfo;
 import team1502.configuration.Parts.Part;
 
 public class Builder {
@@ -44,6 +46,7 @@ public class Builder {
         _build = build;
     }
 
+/*
     public Builder(Builder parent){
         _parent =  parent;
     }
@@ -51,12 +54,10 @@ public class Builder {
     public RobotBuilder getRobotBuilder() {
         return null; //_parent == null ? (RobotBuilder)this : _parent.getRobotBuilder();
     }
-/*
  * 
  public Part createPart(String name) {
      return _build.createPart(name, name);
     }
-    */
 
     protected void install() {
         install(_part);
@@ -65,11 +66,20 @@ public class Builder {
     protected void install(Part part) {
         _parent.install(part);
     }
+    */
 
     public String getName() {
         return  (_part != null) ? _part.name : this.name;
     }
 
+    public Builder Name(String newName) {
+        name = newName;
+        if (_part != null) {
+            _part.name = newName;
+        }
+        return this;
+    
+    }   
     public Builder install(IBuild build) {
         build.install(this);
         return this;
@@ -97,6 +107,18 @@ public class Builder {
         apply(fn);
     }
 
+    // (intended) empty builder (e.g., of another subclass) to do the work
+    protected <T extends Builder> Object eval(Function<T, Object> fn, Part part) {
+        _part = part;
+        return fn.apply((T)this);
+    }
+
+    // use another builder (of the right subclass) to apply
+    protected <T extends Builder> Object evalWith(Function<T, Object> fn, T builder) {
+        return builder.eval(fn, _part);
+    }
+
+    // Normal apply
     protected <T extends Builder> void apply(Function<T, Builder> fn) {
         if (fn != null) {
             fn.apply((T)this);
@@ -109,12 +131,35 @@ public class Builder {
         return build();
     }
 
-    public Builder Build(IBuild build, Part part, Function<Builder, Builder> fn) {
+    public Builder Build(IBuild build, Part part, Function<? extends Builder, Builder> fn) {
         _part = part;
         buildFunction = fn;
         return build();
     }
+    
+    public Builder Create(String partName, Function<? extends Builder, Builder> fn) {
+        var builder = _build.createBuilder(partName, fn);
+        return builder;
+    }
+    public Builder Existing(String partName, Function<? extends Builder, Builder> fn) {
+        var builder = _build.modifyBuilder(partName, fn);
+        return builder;
+    }
 
+    public Builder Install(String newName, Function<Builder, Builder> fn) {
+        var builder = fn.apply(this);
+        builder.Name(newName);
+        builder.addPartTo(this);
+        return this;
+    }
+    
+    private void addPartTo(Builder builder) {
+        builder.addPart(_part);
+    }
+    
+    private void addPart(Part part) {
+        _part.addPart(part);
+    }
 /*
  * 
     public Builder Build(String deviceId, String partName, Function<Part, Part> fn)
@@ -164,7 +209,25 @@ public class Builder {
     public Part getPart(String valueName) {
         return (Part)getValue(valueName);
     }
+
+    public Builder CanInfo(Function<CanInfo, CanInfo> fn)
+    {
+        _part.CanInfo(fn);
+        return this;
+    }
+
     public void setCanNumber(int number) {
         configure(part -> part.CanInfo(c -> c.Number(number)));
     }
+
+    public Builder PowerProfile(double peakPower) {
+        _part.PowerProfile(peakPower);
+        return this;
+    }
+
+    public Builder PowerProfile(PowerProfile power) {
+        _part.PowerProfile(power);
+        return this;
+    }
+
 }

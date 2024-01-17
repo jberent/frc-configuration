@@ -5,7 +5,7 @@ import java.util.function.Function;
 public class SwerveBuilder extends Builder {
 
     public SwerveBuilder(Builder parent) {
-        super(parent);
+        super("SwerveDrive");
     }
 
     public SwerveBuilder SwerveModule(String name, Function<SwerveModuleBuilder, SwerveModuleBuilder> fn) {

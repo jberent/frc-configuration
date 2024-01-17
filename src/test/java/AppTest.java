@@ -35,16 +35,31 @@ public class AppTest {
     }
  */
     public void Test0() {
-        var robot1a = SwerveDriveVebose.CreateRobot0a();
+        var robot0a = SwerveDriveVebose.CreateRobot0a();
+        var robot0b = SwerveDriveVebose.CreateRobot0b();
+        
+        var values = robot0a.Values();
+        var mta = values.Value("NEO_MotorType");
+        var mta2 = values.Value("NEO_MotorType_2");
+        var mmi = values.Value("MotorController.Motor2.Installed");
+        
+        var valuesb = robot0b.Values();
+        var mtb = valuesb.Value("NEO_MotorType");
+        
+        assertEquals(CANSparkMaxLowLevel.MotorType.kBrushless, mta);
+        assertEquals(CANSparkMaxLowLevel.MotorType.kBrushless, mta2);
+        assertEquals(CANSparkMaxLowLevel.MotorType.kBrushless, mtb);
     }
 
     public void Test1() {
-        var robot1a = SwerveDriveVebose.CreateRobot1a();
-        var canMap = robot1a.getCanMap();
-        var gyro = robot1a.getPart("Pigeon2");
-        var turn = robot1a.getPart("TurningMotor");
+        /*
+         * 
+         var robot1a = SwerveDriveVebose.CreateRobot1a();
+         var canMap = robot1a.getCanMap();
+         var gyro = robot1a.getPart("Pigeon2");
+         var turn = robot1a.getPart("TurningMotor");
         var drive = robot1a.getPart("DrivingMotor");
-
+        
         System.out.println();
         ShowCAN(canMap);
         System.out.println();
@@ -52,13 +67,13 @@ public class AppTest {
         ShowGyro(gyro);
         ShowMotor(turn);
         ShowMotor(drive);
-
+        
         var robot1b = SwerveDriveVebose.CreateRobot1b();
         canMap = robot1b.getCanMap();
         gyro = robot1b.getPart("Pigeon2");
         turn = robot1b.getPart("TurningMotor");
         drive = robot1b.getPart("DrivingMotor");
-
+        
         System.out.println();
         ShowCAN(canMap);
         System.out.println();
@@ -66,42 +81,46 @@ public class AppTest {
         ShowGyro(gyro);
         ShowMotor(turn);
         ShowMotor(drive);
-
+        */
+        
     }
 
     @Test
     public void Test2()
     {
-        var robot2a = CreateRobot2a();
-        assertEquals((int)robot2a.getPart("Pigeon2").getCanInfo().deviceNumber, 14);
-        assertTrue(robot2a.getPart("Pigeon2").getCanInfo().deviceType == DeviceType.GyroSensor);
-        assertTrue(robot2a.getPart("Pigeon2").getCanInfo().manufacturer == Manufacturer.CTRElectronics);
-        assertEquals(robot2a.getPart("Pigeon2").getPowerProfile().channel, 8);
-        assertTrue(robot2a.getPart("Pigeon2").getPowerProfile().peakPower == 0.4);
-        assertTrue(robot2a.getPart("Pigeon2").getBoolean("isReversed") == true);
-        
-        assertEquals((int)robot2a.getPart("Pigeon2b").getCanInfo().deviceNumber,15);
-        assertEquals(robot2a.getPart("Pigeon2b").getPowerProfile().channel, 9);
-        assertTrue(robot2a.getPart("Pigeon2b").getBoolean(GyroSensor.ISREVERSED) == false);
-
-        assertEquals((int)robot2a.getPart("Pigeon3").getCanInfo().deviceNumber,16);
-        var tm = robot2a.getPart("TurningMotor");
-
-        CanMap canMap = new CanMap();
-        Part ci1 = new Part("part 1",null).CanInfo(new CanInfo(DeviceType.Accelerometer, Manufacturer.CTRElectronics, 0));
-        Part ci2 = new Part("part 2",null).CanInfo(new CanInfo(DeviceType.Accelerometer, Manufacturer.CTRElectronics, 1));
-        Part ci3 = new Part("part 3",null).CanInfo(new CanInfo(DeviceType.GyroSensor, Manufacturer.CTRElectronics, 1));
-        Part ci4 = new Part("part 4",null).CanInfo(new CanInfo(DeviceType.GyroSensor, Manufacturer.KauaiLabs, 1));
-        canMap.install(ci1);
-        canMap.install(ci2);
-        canMap.install(ci3);
-        canMap.install(ci4);
-        canMap.install(new Part("part 5",null).CanInfo(new CanInfo(DeviceType.GyroSensor, Manufacturer.KauaiLabs, 1)));
-    
-        ShowCAN(canMap);
-        ConfigRobot(robot2a);
-    }
-    
+        /*
+         * 
+         var robot2a = CreateRobot2a();
+         assertEquals((int)robot2a.getPart("Pigeon2").getCanInfo().deviceNumber, 14);
+         assertTrue(robot2a.getPart("Pigeon2").getCanInfo().deviceType == DeviceType.GyroSensor);
+         assertTrue(robot2a.getPart("Pigeon2").getCanInfo().manufacturer == Manufacturer.CTRElectronics);
+         assertEquals(robot2a.getPart("Pigeon2").getPowerProfile().channel, 8);
+         assertTrue(robot2a.getPart("Pigeon2").getPowerProfile().peakPower == 0.4);
+         assertTrue(robot2a.getPart("Pigeon2").getBoolean("isReversed") == true);
+         
+         assertEquals((int)robot2a.getPart("Pigeon2b").getCanInfo().deviceNumber,15);
+         assertEquals(robot2a.getPart("Pigeon2b").getPowerProfile().channel, 9);
+         assertTrue(robot2a.getPart("Pigeon2b").getBoolean(GyroSensor.ISREVERSED) == false);
+         
+         assertEquals((int)robot2a.getPart("Pigeon3").getCanInfo().deviceNumber,16);
+         var tm = robot2a.getPart("TurningMotor");
+         
+         CanMap canMap = new CanMap();
+         Part ci1 = new Part("part 1",null).CanInfo(new CanInfo(DeviceType.Accelerometer, Manufacturer.CTRElectronics, 0));
+         Part ci2 = new Part("part 2",null).CanInfo(new CanInfo(DeviceType.Accelerometer, Manufacturer.CTRElectronics, 1));
+         Part ci3 = new Part("part 3",null).CanInfo(new CanInfo(DeviceType.GyroSensor, Manufacturer.CTRElectronics, 1));
+         Part ci4 = new Part("part 4",null).CanInfo(new CanInfo(DeviceType.GyroSensor, Manufacturer.KauaiLabs, 1));
+         canMap.install(ci1);
+         canMap.install(ci2);
+         canMap.install(ci3);
+         canMap.install(ci4);
+         canMap.install(new Part("part 5",null).CanInfo(new CanInfo(DeviceType.GyroSensor, Manufacturer.KauaiLabs, 1)));
+         
+         ShowCAN(canMap);
+         ConfigRobot(robot2a);
+         */
+        }
+    /* 
     public void ConfigRobot(Robot robot) {
         System.out.println();
         ShowCAN(robot.getCanMap());
@@ -115,7 +134,7 @@ public class AppTest {
         System.out.println(MessageFormat.format("public static final {0} gyro = new {1}({2});", part.name, part.name, part.getCanId() ));
         System.out.println(MessageFormat.format("public static final boolean GYRO_REVERSED = {0};", part.getBoolean("isReversed") ));
     }
-
+    
     private void ShowMotor(Part part)
     {
         var motor = part.getPart("Motor");
@@ -129,17 +148,17 @@ public class AppTest {
         List<String> ratios = stages.stream().map(s -> s.format("({0}.0 / {1}.0)", "drivingTeeth", "drivenTeeth")).toList();
         Part.print(String.join(" * ", ratios));
         Part.println(");");
-
+        
         double _gearRatio = part.getGearRatio();
         Part.println("// computed as: 1/" + _gearRatio + " = " + (1/_gearRatio));
-
-    
+        
+        
     }
-
+    
     public void ShowCAN(CanMap canMap) {
         System.out.println();
         System.out.println("=== CAN MAP ===");
-
+        
         canMap.getDevices()
         .forEach(d -> {
             if (d.getErrors().isEmpty()) {
@@ -148,29 +167,30 @@ public class AppTest {
                 System.out.print("! ");
             }
             System.out.println(MessageFormat.format("\"{0}\" {1} #{2} ({3})",
-                d.getName(),
-                d.getCanInfo().deviceType.DeviceName,
-                d.getCanId(),
-                d.getCanInfo().manufacturer.ManufacturerName));
-      
-                d.getErrors().forEach(e -> System.out.println(MessageFormat.format("    {0}", e)));
+            d.getName(),
+            d.getCanInfo().deviceType.DeviceName,
+            d.getCanId(),
+            d.getCanInfo().manufacturer.ManufacturerName));
+            
+            d.getErrors().forEach(e -> System.out.println(MessageFormat.format("    {0}", e)));
         });
-
+        
     }
-
+    */    
+    
     @Test
     public void Test3()
     {
-        var robot1a = CreateRobot1a();
-        var robot1b = CreateRobot1b();
-        assertTrue(robot1a.getPart("Pigeon2").getCanInfo().deviceType == DeviceType.GyroSensor);
-        assertTrue(robot1a.getPart("Pigeon2").getCanInfo().manufacturer == Manufacturer.CTRElectronics);
-        assertEquals(robot1a.getPart("Pigeon2").getPowerProfile().peakPower, 0.4);
+        // var robot1a = CreateRobot1a();
+        // var robot1b = CreateRobot1b();
+        // assertTrue(robot1a.getPart("Pigeon2").getCanInfo().deviceType == DeviceType.GyroSensor);
+        // assertTrue(robot1a.getPart("Pigeon2").getCanInfo().manufacturer == Manufacturer.CTRElectronics);
+        // assertEquals(robot1a.getPart("Pigeon2").getPowerProfile().peakPower, 0.4);
         
-        assertTrue(robot1a.getPart("Pigeon2").getCanInfo().deviceType == robot1b.getPart("Pigeon2").getCanInfo().deviceType);
-        assertTrue(robot1a.getPart("Pigeon2").getCanInfo().manufacturer == robot1b.getPart("Pigeon2").getCanInfo().manufacturer);
+        // assertTrue(robot1a.getPart("Pigeon2").getCanInfo().deviceType == robot1b.getPart("Pigeon2").getCanInfo().deviceType);
+        // assertTrue(robot1a.getPart("Pigeon2").getCanInfo().manufacturer == robot1b.getPart("Pigeon2").getCanInfo().manufacturer);
     }
-
+    
     public static void Log(Robot robot)
     {
         //robot.

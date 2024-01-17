@@ -23,7 +23,7 @@ public class PartFactory {
         _robotBuilder=rb;
     }
     
-    public PartFactory Define(String name, Function<Builder, Builder> fn) {
+    public PartFactory Part(String name, Function<Builder, Builder> fn) {
         _builderMap.put(name,  new Builder(name, _build, fn));
         return this;
     }
@@ -34,6 +34,10 @@ public class PartFactory {
 
     public PartFactory Motor(String name, Function<Motor, Builder> fn) {
         _builderMap.put(name,  new Motor(name, fn));
+        return this;
+    }
+    public PartFactory MotorController(String name, Function<MotorController, Builder> fn) {
+        _builderMap.put(name,  new MotorController(name, fn));
         return this;
     }
 

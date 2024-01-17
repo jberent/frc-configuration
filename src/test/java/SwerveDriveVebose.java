@@ -10,14 +10,22 @@ public final class SwerveDriveVebose {
     public static Robot CreateRobot0a() { return Robot
         .Create("robot_0", r -> r
             .Parts(define -> define
-                .Define("NEO", n -> n
+                .Part("NEO", n -> n
                     .Value("motorType", CANSparkMaxLowLevel.MotorType.kBrushless)
                 )
             )
             .Build(hw -> hw
-                .Build("NEO", p -> p)
+                .Part("NEO", p -> p.Value("Installed", true))
+                .Part(DeviceType.MotorController, "MotorController", m -> m
+                    .Install("Motor", g -> g.Create("NEO", null))
+                    .Install("Motor2", g -> g.Existing("NEO", null))
+                )
             )
-            //.Values(expr -> expr)
+            .Values(k -> k
+                .Value("NEO_MotorType", "NEO", m -> m.getValue("motorType"))
+                .Motor("NEO_MotorType_2", "NEO", m -> m.MotorType())
+                .Value("MotorController.Motor2.Installed", "MotorController", m -> m.getPart("Motor2").getBoolean("Installed"))
+            )
         );
     }
 
@@ -30,6 +38,10 @@ public final class SwerveDriveVebose {
             )
             .Build(hw -> hw
                 .Motor("NEO", m -> m)
+                //.MotorController("MotorController", b -> b)
+            )
+            .Values(k -> k
+                .Motor("NEO_MotorType", "NEO", m -> m.MotorType())
             )
         );
     }

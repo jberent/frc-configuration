@@ -1,4 +1,6 @@
 package team1502.configuration.Builder.Controllers;
+import java.util.function.Function;
+
 import team1502.configuration.PowerProfile;
 import team1502.configuration.SupportedDevices;
 import team1502.configuration.Builder.Builder;
@@ -15,6 +17,10 @@ public class Controller extends Builder {
     // public PowerProfile powerProfile;
 
     
+    public Controller(String name, DeviceType deviceType, Function<? extends Builder,  Builder> fn ) {
+        super(deviceType.toString(), name, fn);
+    }
+
     public Controller(String name, DeviceType deviceType) {
         super(deviceType.toString());
         //CanInfo(new CanInfo(deviceType, null));
@@ -23,12 +29,17 @@ public class Controller extends Builder {
         super(deviceType.toString());
         //CanInfo(new CanInfo(deviceType, manufacturer));
     }
-/*
     public Controller Manufacturer(Manufacturer manufacturer) {
         CanInfo(i->i.Manufacturer(manufacturer));
         return this;
     }
     
+    public Controller CanNumber(int number) {
+        setCanNumber(number);
+        return this;
+    }
+
+/*
     public Controller PowerProfile(double peakPower) {
         PowerProfile(w->w.PeakPower(peakPower));
         return this;
@@ -59,8 +70,8 @@ public class Controller extends Builder {
         this.powerProfile = profile;
         return this;
     }
- * 
  */
+  
     public Controller Device(SupportedDevices deviceType) {
         //this.deviceType = deviceType;
         return this;

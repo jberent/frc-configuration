@@ -32,8 +32,9 @@ public enum SupportedDevices {
     {
         PowerProfile power = PowerProfile.getProfile(this);
         Controller equipment = defineEquipment.apply(name);
-        if (power != null)
-        //equipment.PowerProfile(power);
+        if (power != null) {
+            equipment.PowerProfile(power);
+        }
         return equipment;
     }
 }

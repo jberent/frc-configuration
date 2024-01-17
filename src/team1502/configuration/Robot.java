@@ -34,7 +34,7 @@ public class Robot /*extends Part*/ {
 
     }
 
-    public Part getPart(String name) {return _robotBuilder.getPart(name); }
+    //public Part getPart(String name) {return _robotBuilder.getPart(name); }
     public CanMap getCanMap() {return _robotBuilder.getCanMap();}
 
     public Robot Parts(Function<PartFactory, PartFactory> fn) {
@@ -46,6 +46,14 @@ public class Robot /*extends Part*/ {
         if (_robotBuilder == null) {
             _robotBuilder = RobotBuilder.Create(_partFactory);
         }
+        fn.apply(_robotBuilder);
+        return this;
+    }
+
+    public RobotBuilder Values() {
+        return _robotBuilder;
+    }
+    public Robot Values(Function<RobotBuilder, RobotBuilder> fn) {
         fn.apply(_robotBuilder);
         return this;
     }
