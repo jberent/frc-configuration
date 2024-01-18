@@ -46,9 +46,9 @@ public class AppTest {
         var valuesb = robot0b.Values();
         var mtb = valuesb.Value("NEO_MotorType");
         
-        assertEquals(CANSparkMaxLowLevel.MotorType.kBrushless, mta);
-        assertEquals(CANSparkMaxLowLevel.MotorType.kBrushless, mta2);
-        assertEquals(CANSparkMaxLowLevel.MotorType.kBrushless, mtb);
+        assertTrue(CANSparkMaxLowLevel.MotorType.kBrushless == mta);
+        assertTrue(CANSparkMaxLowLevel.MotorType.kBrushless == mta2);
+        assertTrue(CANSparkMaxLowLevel.MotorType.kBrushless == mtb);
     }
 
     public void Test1() {

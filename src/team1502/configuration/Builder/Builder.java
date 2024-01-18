@@ -13,19 +13,22 @@ public class Builder {
     
     private IBuild _build;
     private Part _part;
-    private Builder _parent;
+    /*
+     * 
+     //private Builder _parent;
+     
+     public Builder(Part part, IBuild build, Function<Builder, Builder> fn){
+         _part = part;
+         _build = build;
+         fn.apply(this);
+        }
+        
+    */
 
-    public Builder(Part part, IBuild build, Function<Builder, Builder> fn){
-        _part = part;
-        _build = build;
-        fn.apply(this);
-    }
-
-    public Builder(String name, IBuild build, Function<Builder, Builder> fn){
+    // Just a build function (for partFactory)
+    public Builder(String name, Function<Builder, Builder> fn){
         this.name = name;
         buildFunction = fn;
-        _build = build;
-
     }
 
     protected Builder(String buildType) {
@@ -38,6 +41,22 @@ public class Builder {
         buildFunction = fn;
     }
 
+    protected void Fill(String buildType, String name, Function<? extends Builder,  Builder> fn) {
+        this.buildType = buildType;
+        this.name = name;
+        buildFunction = fn;
+    }
+
+    public Builder createBuilder(Builder builder) {
+        builder.Fill(buildType, name, buildFunction);
+        return builder;
+    }
+
+    public Builder createBuilder() {
+        return new Builder(buildType, name, buildFunction);
+    }
+
+/*
     protected Builder(String buildType, String name, IBuild build, Function<Builder, Builder> fn)
     {
         this.name = name;
@@ -46,7 +65,6 @@ public class Builder {
         _build = build;
     }
 
-/*
     public Builder(Builder parent){
         _parent =  parent;
     }
@@ -80,18 +98,38 @@ public class Builder {
         return this;
     
     }   
-    public Builder install(IBuild build) {
-        build.install(this);
-        return this;
-    }
+    // public Builder install(IBuild build) {
+    //     build.install(this);
+    //     return this;
+    // }
     
     // initial part constructor, reusable with new fn for modification
-    public Builder create(IBuild build, String name) {
+    public Builder create(IBuild build) {
         _build = build;
         _part = new Part().Name(name);
         setValue("buildType", buildType);
         build();
         return this; //_part;
+    }
+    
+    public Builder create(IBuild build, Function<? extends Builder, Builder> fn) {
+        create(build);
+        apply(fn);
+        return this;
+    }
+
+    public Builder create(IBuild build, String name, Function<? extends Builder, Builder> fn) {
+        create(build, name);
+        apply(fn);
+        return this;
+    }
+
+    public Builder create(IBuild build, String name) {
+        _build = build;
+        _part = new Part().Name(name);
+        setValue("buildType", buildType);
+        build();
+        return this;
     }
 
     public Builder build() {
