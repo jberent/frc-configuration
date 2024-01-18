@@ -39,16 +39,19 @@ public class AppTest {
         var robot0b = SwerveDriveVebose.CreateRobot0b();
         
         var values = robot0a.Values();
-        var mta = values.Value("NEO_MotorType");
-        var mta2 = values.Value("NEO_MotorType_2");
-        var mmi = values.Value("MotorController.Motor2.Installed");
+        var mt = values.Value("NEO_MotorType");
+        var mt_2 = values.Value("NEO_MotorType_2");
+        var rpm = (double)values.Value("MotorController.Motor.FreeSpeedRPM");
         
-        var valuesb = robot0b.Values();
-        var mtb = valuesb.Value("NEO_MotorType");
+        values = robot0b.Values();
+        var b_mt = values.Value("NEO_MotorType");
+        var b_rpm = (double)values.Value("MotorController.Motor.FreeSpeedRPM");
         
-        assertEquals(CANSparkMaxLowLevel.MotorType.kBrushless, mta);
-        assertEquals(CANSparkMaxLowLevel.MotorType.kBrushless, mta2);
-        assertEquals(CANSparkMaxLowLevel.MotorType.kBrushless, mtb);
+        assertEquals(CANSparkMaxLowLevel.MotorType.kBrushless, mt);
+        assertEquals(CANSparkMaxLowLevel.MotorType.kBrushless, mt_2);
+        assertEquals(CANSparkMaxLowLevel.MotorType.kBrushless, b_mt);
+        assertEquals(5_820.0, rpm);
+        assertEquals(5_820.0, b_rpm);
     }
 
     public void Test1() {

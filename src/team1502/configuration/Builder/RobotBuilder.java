@@ -33,35 +33,7 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
         return robot;
     }
 
-    public CanMap getCanMap() {return _canMap;}
-/*
-
-    @Override // IBuild
-    public Part getPart(String name) {
-        return _partMap.get(name);
-    }
-
- * 
-    @Override // IBuild
-    public Part createPart(String newName, String partName) {
-        var builder = _partFactory.getBuilder(partName);
-        Part part = builder.build((IBuild)this, newName);
-        part.name= newName;
-        return part;
-    }
-    private Part createPart(String partName) {
-        return createPart(partName, partName);
-    }
-
-    //@Override
-    protected void install(Part part) {
-        _partMap.put(part.name, part);
-        if (part.hasCanInfo()) {
-            _canMap.install(part);
-        }
-    }
- */
-
+    // IBuild INTERFACE
     @Override // IBuild
     public void install(Builder builder) {
         _buildMap.put(builder.getName(), builder);
@@ -71,18 +43,6 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
         return _buildMap.get(name);
     }
 
-/*
-    private Builder getBuilder(String partName) {
-        var builder = getInstalled(partName);
-        if (builder == null) {
-            builder = _partFactory.getBuilder(partName);
-            builder.create((IBuild)this, partName);
-            builder.install((IBuild)this);
-        }
-        return builder;
-    }
-
-*/    
     @Override // IBuild
     public Builder createBuilder(String partName, Function<? extends Builder, Builder> fn) {
         var builder = _partFactory.getBuilder(partName);
@@ -107,7 +67,7 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
         return installBuilder(builder);
     }
 
- 
+    // BUILDER AND BUILDER SUBCLASSES
     
     public RobotBuilder Part(DeviceType deviceType, String partName, Function<Builder, Builder> fn) {
         return Part(deviceType.toString(), partName, fn);
@@ -128,12 +88,10 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
         installBuilder(partName, fn);
         return this;
     }    
-
-
-    public RobotBuilder Value(String valueName, String partName, Function<? extends Builder, Object> fn) {
-        _valueMap.put(valueName, s -> getValue(partName, fn));   
+    public RobotBuilder MotorController(String partName, Function<team1502.configuration.Builder.Controllers.MotorController, Builder> fn) {        
+        installBuilder(partName, fn);
         return this;
-    }
+    }    
 
     // Eval as-a Motor as long is in the right "Shape"
     public RobotBuilder Motor(String valueName, String partName, Function<Motor, Object> fn) {
@@ -141,6 +99,15 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
         return this;
     }
     
+
+    // VALUES and VALUE EXPRESSIONS
+    public CanMap getCanMap() {return _canMap;}
+
+
+    public RobotBuilder Value(String valueName, String partName, Function<? extends Builder, Object> fn) {
+        _valueMap.put(valueName, s -> getValue(partName, fn));   
+        return this;
+    }
     public Object Value(String valueName) {
         var fn = _valueMap.get(valueName);
         return fn.apply(valueName);
@@ -157,7 +124,39 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     }
 
 /*
- * 
+
+    @Override // IBuild
+    public Part getPart(String name) {
+        return _partMap.get(name);
+    }
+    @Override // IBuild
+    public Part createPart(String newName, String partName) {
+        var builder = _partFactory.getBuilder(partName);
+        Part part = builder.build((IBuild)this, newName);
+        part.name= newName;
+        return part;
+    }
+    private Part createPart(String partName) {
+        return createPart(partName, partName);
+    }
+
+    //@Override
+    protected void install(Part part) {
+        _partMap.put(part.name, part);
+        if (part.hasCanInfo()) {
+            _canMap.install(part);
+        }
+    }
+    private Builder getBuilder(String partName) {
+        var builder = getInstalled(partName);
+        if (builder == null) {
+            builder = _partFactory.getBuilder(partName);
+            builder.create((IBuild)this, partName);
+            builder.install((IBuild)this);
+        }
+        return builder;
+    }
+ 
     public RobotBuilder Build(String newName, String partName, Function<Part, Part> fn)
     {        
         var part = createPart(newName, partName);

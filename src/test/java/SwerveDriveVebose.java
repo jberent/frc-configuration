@@ -15,16 +15,19 @@ public final class SwerveDriveVebose {
                 )
             )
             .Build(hw -> hw
-                .Part("NEO", p -> p.Value("Installed", true))
-                .Part(DeviceType.MotorController, "MotorController", m -> m
-                    .Install("Motor", g -> g.Create("NEO", null))
-                    .Install("Motor2", g -> g.Existing("NEO", null))
+                .Part("NEO", p -> p.Value("FreeSpeedRPM", 5_820.0))
+                .Part("MotorController", m -> m
+                    .CanInfo(c -> c
+                        .Device(DeviceType.MotorController)
+                        .Manufacturer(Manufacturer.REVRobotics))
+                    .Install("Motor2", g -> g.Create("NEO", null))
+                    .Install("Motor", g -> g.Existing("NEO", null))
                 )
             )
             .Values(k -> k
                 .Value("NEO_MotorType", "NEO", m -> m.getValue("motorType"))
                 .Motor("NEO_MotorType_2", "NEO", m -> m.MotorType())
-                .Value("MotorController.Motor2.Installed", "MotorController", m -> m.getPart("Motor2").getBoolean("Installed"))
+                .Value("MotorController.Motor.FreeSpeedRPM", "MotorController", m -> m.getPart("Motor").getDouble("FreeSpeedRPM"))
             )
         );
     }
@@ -34,11 +37,13 @@ public final class SwerveDriveVebose {
             .Parts(define -> define
                 .Motor("NEO", n -> n
                     .MotorType(CANSparkMaxLowLevel.MotorType.kBrushless)
+                    .FreeSpeedRPM(5_820.0)
                 )
             )
             .Build(hw -> hw
                 .Motor("NEO", m -> m)
-                //.MotorController("MotorController", b -> b)
+                .MotorController("MotorController", b -> b
+                )
             )
             .Values(k -> k
                 .Motor("NEO_MotorType", "NEO", m -> m.MotorType())

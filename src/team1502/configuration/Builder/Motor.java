@@ -20,6 +20,9 @@ public class Motor extends Builder {
     public Motor MotorType(CANSparkMaxLowLevel.MotorType motorType) {
           return (Motor)Value("motorType", motorType);
     }
+    public Motor FreeSpeedRPM(double speed) {
+          return (Motor)Value("freeSpeedRPM", speed);
+    }
 
     public CANSparkMaxLowLevel.MotorType MotorType() {
           return (CANSparkMaxLowLevel.MotorType)getValue("motorType");
