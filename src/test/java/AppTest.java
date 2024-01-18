@@ -47,9 +47,9 @@ public class AppTest {
         var b_mt = values.Value("NEO_MotorType");
         var b_rpm = (double)values.Value("MotorController.Motor.FreeSpeedRPM");
         
-        assertEquals(CANSparkMaxLowLevel.MotorType.kBrushless, mt);
-        assertEquals(CANSparkMaxLowLevel.MotorType.kBrushless, mt_2);
-        assertEquals(CANSparkMaxLowLevel.MotorType.kBrushless, b_mt);
+        assertTrue(CANSparkMaxLowLevel.MotorType.kBrushless == mt);
+        assertTrue(CANSparkMaxLowLevel.MotorType.kBrushless == mt_2);
+        assertTrue(CANSparkMaxLowLevel.MotorType.kBrushless == b_mt);
         assertEquals(5_820.0, rpm);
         assertEquals(5_820.0, b_rpm);
     }

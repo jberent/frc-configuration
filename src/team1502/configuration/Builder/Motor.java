@@ -3,13 +3,17 @@ package team1502.configuration.Builder;
 import java.util.function.Function;
 
 import team1502.Wpi.CANSparkMaxLowLevel;
-import team1502.configuration.Parts.Part;
 
 public class Motor extends Builder {
     
     //Define
     public Motor(String name, Function<Motor, Builder> fn) {
         super("Motor", name, fn);
+    }
+
+    @Override
+    public Builder createBuilder() {
+        return new Motor(name, (Function<Motor, Builder>)buildFunction);
     }
 
     //Build / Eval

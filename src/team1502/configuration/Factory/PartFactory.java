@@ -24,12 +24,18 @@ public class PartFactory {
     }
     
     public PartFactory Part(String name, Function<Builder, Builder> fn) {
-        _builderMap.put(name,  new Builder(name, _build, fn));
+        _builderMap.put(name,  new Builder(name, fn));
         return this;
     }
 
+    public void useBuilder(Builder builder) {
+        var template = _builderMap.get(builder.name);
+        template.createBuilder(builder);
+    }
+    
     public Builder getBuilder(String name) {
-        return _builderMap.get(name);
+        var template = _builderMap.get(name);
+        return template.createBuilder();
     }
 
     public PartFactory Motor(String name, Function<Motor, Builder> fn) {

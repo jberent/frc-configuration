@@ -34,7 +34,6 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     }
 
     // IBuild INTERFACE
-    @Override // IBuild
     public void install(Builder builder) {
         _buildMap.put(builder.getName(), builder);
     }
@@ -46,7 +45,7 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     @Override // IBuild
     public Builder createBuilder(String partName, Function<? extends Builder, Builder> fn) {
         var builder = _partFactory.getBuilder(partName);
-        builder.create((IBuild)this, partName);
+        builder.create((IBuild)this, partName, fn);
         return builder;
     }
 
@@ -58,8 +57,14 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     }
 
     private Builder installBuilder(Builder builder) {
-        builder.install((IBuild)this);
+        install(builder);
         return builder;
+    }
+
+    private Builder installBuilder(Builder builder, Function<? extends Builder, Builder> fn) {
+        _partFactory.useBuilder(builder);
+        builder.create((IBuild)this, fn);
+        return installBuilder(builder);
     }
 
     private Builder installBuilder(String partName, Function<? extends Builder, Builder> fn) {
@@ -72,8 +77,10 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     public RobotBuilder Part(DeviceType deviceType, String partName, Function<Builder, Builder> fn) {
         return Part(deviceType.toString(), partName, fn);
     }
+
     public RobotBuilder Part(String buildType, String partName, Function<Builder, Builder> fn) {
         var builder = new Builder(buildType, partName, fn);
+        builder.create((IBuild)this);
         install(builder);
         return this;
     }
@@ -85,7 +92,7 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     }
 
     public RobotBuilder Motor(String partName, Function<Motor, Builder> fn) {        
-        installBuilder(partName, fn);
+        installBuilder(new Motor(partName, null), fn);
         return this;
     }    
     public RobotBuilder MotorController(String partName, Function<team1502.configuration.Builder.Controllers.MotorController, Builder> fn) {        
