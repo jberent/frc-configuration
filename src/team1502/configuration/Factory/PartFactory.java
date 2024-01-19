@@ -30,7 +30,9 @@ public class PartFactory {
 
     public void useBuilder(Builder builder) {
         var template = _builderMap.get(builder.name);
-        template.createBuilder(builder);
+        if (template != null) {
+            template.createBuilder(builder);
+        }
     }
     
     public Builder getBuilder(String name) {

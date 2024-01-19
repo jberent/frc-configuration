@@ -41,17 +41,18 @@ public class AppTest {
         var values = robot0a.Values();
         var mt = values.Value("NEO_MotorType");
         var mt_2 = values.Value("NEO_MotorType_2");
-        var rpm = (double)values.Value("MotorController.Motor.FreeSpeedRPM");
+        var rpm = (double)values.Value("DriveMotor.Motor.FreeSpeedRPM");
         
         values = robot0b.Values();
         var b_mt = values.Value("NEO_MotorType");
-        var b_rpm = (double)values.Value("MotorController.Motor.FreeSpeedRPM");
+        var b_rpm = (double)values.Value("DriveMotor.Motor.FreeSpeedRPM");
         
         assertTrue(CANSparkMaxLowLevel.MotorType.kBrushless == mt);
         assertTrue(CANSparkMaxLowLevel.MotorType.kBrushless == mt_2);
         assertTrue(CANSparkMaxLowLevel.MotorType.kBrushless == b_mt);
-        assertEquals(5_820.0, rpm);
-        assertEquals(5_820.0, b_rpm);
+        assertTrue(5_820.0 == rpm);
+        assertTrue(5_820.0 == b_rpm);
+        assertEquals(5_280.0, 5_280.0);
     }
 
     public void Test1() {

@@ -18,17 +18,27 @@ public class Controller extends Builder {
 
     
     public Controller(String name, DeviceType deviceType, Function<? extends Builder,  Builder> fn ) {
-        super(deviceType.toString(), name, fn);
+        super(deviceType.toString(), name, c -> c
+            .CanInfo(can -> can.Device(deviceType))
+            .Apply(fn));
     }
 
     public Controller(String name, DeviceType deviceType) {
-        super(deviceType.toString());
-        //CanInfo(new CanInfo(deviceType, null));
+        super(deviceType.toString(), name, c -> c
+            .CanInfo(can -> can.Device(deviceType)));
     }
     public Controller(String name, DeviceType deviceType, Manufacturer manufacturer) {
-        super(deviceType.toString());
-        //CanInfo(new CanInfo(deviceType, manufacturer));
+        super(deviceType.toString(), name, c -> c
+            .CanInfo(can -> can
+                .Device(deviceType)
+                .Manufacturer(manufacturer)));
     }
+
+    //Build / Eval
+    public Controller(DeviceType deviceType) {
+        super(deviceType.toString());
+    }
+    
     public Controller Manufacturer(Manufacturer manufacturer) {
         CanInfo(i->i.Manufacturer(manufacturer));
         return this;
@@ -37,6 +47,10 @@ public class Controller extends Builder {
     public Controller CanNumber(int number) {
         setCanNumber(number);
         return this;
+    }
+
+    public int CanNumber() {
+        return getCanNumber();
     }
 
 /*

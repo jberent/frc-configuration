@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.function.Function;
 
 import team1502.configuration.Builder.Controllers.GyroSensor;
+import team1502.configuration.Builder.Controllers.MotorController;
 import team1502.configuration.CAN.CanMap;
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.Parts.Part;
@@ -52,7 +53,10 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     @Override // IBuild
     public Builder modifyBuilder(String partName, Function<? extends Builder, Builder> fn) {
         var builder = getInstalled(partName);
-        builder.apply(fn);
+        builder.apply(fn); // fail fast
+        // if (builder != null) {
+        //     builder.apply(fn);
+        // }
         return builder;
     }
 
@@ -61,7 +65,8 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
         return builder;
     }
 
-    private Builder installBuilder(Builder builder, Function<? extends Builder, Builder> fn) {
+    private Builder installBuilder(String partName, Builder builder, Function<? extends Builder, Builder> fn) {
+        builder.Name(partName);
         _partFactory.useBuilder(builder);
         builder.create((IBuild)this, fn);
         return installBuilder(builder);
@@ -92,23 +97,29 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     }
 
     public RobotBuilder Motor(String partName, Function<Motor, Builder> fn) {        
-        installBuilder(new Motor(partName, null), fn);
+        installBuilder(partName, new Motor(), fn);
         return this;
     }    
     public RobotBuilder MotorController(String partName, Function<team1502.configuration.Builder.Controllers.MotorController, Builder> fn) {        
-        installBuilder(partName, fn);
+        installBuilder(partName, new MotorController(), fn);
         return this;
     }    
+
+
+    // VALUES and VALUE EXPRESSIONS
+
+    public CanMap getCanMap() {return _canMap;}
 
     // Eval as-a Motor as long is in the right "Shape"
     public RobotBuilder Motor(String valueName, String partName, Function<Motor, Object> fn) {
         _valueMap.put(valueName, s -> getValue(partName, new Motor(), fn));   
         return this;
     }
+    public RobotBuilder MotorController(String valueName, String partName, Function<MotorController, Object> fn) {
+        _valueMap.put(valueName, s -> getValue(partName, new MotorController(), fn));   
+        return this;
+    }
     
-
-    // VALUES and VALUE EXPRESSIONS
-    public CanMap getCanMap() {return _canMap;}
 
 
     public RobotBuilder Value(String valueName, String partName, Function<? extends Builder, Object> fn) {

@@ -16,18 +16,19 @@ public final class SwerveDriveVebose {
             )
             .Build(hw -> hw
                 .Part("NEO", p -> p.Value("FreeSpeedRPM", 5_820.0))
-                .Part("MotorController", m -> m
+                .Part("MotorController", "DriveMotor", m -> m
                     .CanInfo(c -> c
                         .Device(DeviceType.MotorController)
                         .Manufacturer(Manufacturer.REVRobotics))
                     .Install("Motor2", g -> g.Create("NEO", null))
+                    // useful ?? doesn't this change the name of the NEO?
                     .Install("Motor", g -> g.Existing("NEO", null))
                 )
             )
             .Values(k -> k
                 .Value("NEO_MotorType", "NEO", m -> m.getValue("motorType"))
                 .Motor("NEO_MotorType_2", "NEO", m -> m.MotorType())
-                .Value("MotorController.Motor.FreeSpeedRPM", "MotorController", m -> m.getPart("Motor").getDouble("FreeSpeedRPM"))
+                .Value("DriveMotor.Motor.FreeSpeedRPM", "DriveMotor", m -> m.getPart("Motor").getDouble("FreeSpeedRPM"))
             )
         );
     }
@@ -42,11 +43,14 @@ public final class SwerveDriveVebose {
             )
             .Build(hw -> hw
                 .Motor("NEO", m -> m)
-                .MotorController("MotorController", b -> b
+                .MotorController("DriveMotor", b -> b
+                    .Motor("NEO", m -> m)
+                    .IdleMode(IdleMode.kBrake)
                 )
             )
             .Values(k -> k
                 .Motor("NEO_MotorType", "NEO", m -> m.MotorType())
+                .MotorController("DriveMotor.Motor.FreeSpeedRPM", "DriveMotor", m -> m.Motor().FreeSpeedRPM())
             )
         );
     }
