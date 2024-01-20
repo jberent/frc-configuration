@@ -7,6 +7,7 @@ import team1502.configuration.Builder.Builder;
 import team1502.configuration.Builder.RobotBuilder;
 import team1502.configuration.Builder.Controllers.MotorController;
 import team1502.configuration.Builder.Motor;
+import team1502.configuration.Builder.SwerveModule;
 
 public class Evaluator {
     private HashMap<String, EvaluatorArgs> _valueMap = new HashMap<>(); 
@@ -74,6 +75,9 @@ public class Evaluator {
     }
     public Object MotorController(String partName, Function<MotorController, Object> fn) {
         return getValue(partName, new MotorController(), fn);   
+    }
+    public Object SwerveModule(String partName, Function<SwerveModule, Object> fn) {
+        return getValue(partName, new SwerveModule(), fn);   
     }
 
 }

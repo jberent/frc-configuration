@@ -40,8 +40,10 @@ public class AppTest {
         LogMessage("");
         LogMessage("== TEST 0 ===============");
 
-        var robot0a = SwerveDriveVebose.CreateRobot0a();
-        var robot0b = SwerveDriveVebose.CreateRobot0b();
+        var robot0a = SwerveDriveVerbose.CreateRobot0a();
+        LogMessage("Robot: {0}", robot0a.name);
+        var robot0b = SwerveDriveVerbose.CreateRobot0b();
+        LogMessage("Robot: {0}", robot0b.name);
         
         var values = robot0a.Values();
         var mt = values.getValue("NEO.MotorType");
@@ -90,7 +92,7 @@ public class AppTest {
         );
     }
     private void LogCanInfo(Robot robot, String controllerName) {
-        LogMessage("{0} CAN={1} Manufaturer={2}", controllerName,
+        LogMessage("{0} CAN={1} Manufacturer={2}", controllerName,
             robot.getValue("MotorController.CanNumber", controllerName),
             robot.getValue("MotorController.Manufacturer", controllerName)
         );
@@ -100,7 +102,9 @@ public class AppTest {
         LogMessage("");
         LogMessage("== TEST 1 ===============");
 
-        var robot = SwerveDriveVebose.CreateRobot1();
+        var robot = SwerveDriveVerbose.CreateRobot1();
+        LogMessage("Robot: {0}", robot.name);
+
         LogCanInfo(robot, "Motor#0");
         LogMotorInfo(robot, "Motor#0");
 
@@ -108,6 +112,12 @@ public class AppTest {
         LogMotorInfo(robot, "Motor#1");
         LogCanInfo(robot, "Motor#3");
         LogMotorInfo(robot, "Motor#3");
+
+        LogMessage("{0} GearRatio: {1}", "Motor#0", robot.getValue("MotorController.GearRatio", "Motor#0"));
+        LogMessage("{0} GearRatio: {1}", "Motor#1", robot.getValue("MotorController.GearRatio", "Motor#1"));
+
+        LogMessage("{0} PID p:{1}", "Motor#0", robot.getValue("MotorController.PID.p", "Motor#0"));
+
 
         /*
          * 
@@ -143,11 +153,31 @@ public class AppTest {
         LogMessage("^^ TEST 1 ===============");
         LogMessage("");
 
+        Test2();
     }
 
     @Test
     public void Test2()
     {
+        LogMessage("");
+        LogMessage("== TEST 2 ===============");
+
+        var robot = SwerveDriveVerbose.CreateRobot2();
+        LogMessage("Robot: {0}", robot.name);
+        LogMessage("Module: {0} MotorType:{1} {2}", "Module#1",
+            robot.getValue("SwerveModule.TurningMotor.Motor.MotorType", "Module#1"),
+            (boolean)robot.getValue("SwerveModule.TurningMotor.Reversed", "Module#1") ? "Reversed" : ""
+            );
+        LogMessage("Module: {0} MotorType:{1} {2}", "Module#2",
+            robot.getValue("SwerveModule.TurningMotor.Motor.MotorType", "Module#2"),
+            (boolean)robot.getValue("SwerveModule.TurningMotor.Reversed", "Module#2") ? "Reversed" : ""
+            );
+
+        LogMessage("");
+        LogMessage("^^ TEST 2 ===============");
+        LogMessage("");
+
+
         /*
          * 
          var robot2a = CreateRobot2a();
@@ -179,7 +209,7 @@ public class AppTest {
          ShowCAN(canMap);
          ConfigRobot(robot2a);
          */
-        }
+    }
     /* 
     public void ConfigRobot(Robot robot) {
         System.out.println();

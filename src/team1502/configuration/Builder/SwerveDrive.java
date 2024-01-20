@@ -2,15 +2,15 @@ package team1502.configuration.Builder;
 
 import java.util.function.Function;
 
-public class SwerveBuilder extends Builder {
+public class SwerveDrive extends Builder {
 
-    public SwerveBuilder(Builder parent) {
+    public SwerveDrive(Builder parent) {
         super("SwerveDrive");
     }
 
-    public SwerveBuilder SwerveModule(String name, Function<SwerveModuleBuilder, SwerveModuleBuilder> fn) {
-        var swerve = new SwerveModuleBuilder(this);
-        fn.apply(swerve);
+    public SwerveDrive SwerveModule(String name, Function<SwerveModule, SwerveModule> fn) {
+        // var swerve = new SwerveModuleBuilder(this);
+        // fn.apply(swerve);
         return this;
     }
 

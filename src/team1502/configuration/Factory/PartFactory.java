@@ -8,6 +8,7 @@ import team1502.configuration.Builder.IBuild;
 import team1502.configuration.Builder.Motor;
 import team1502.configuration.Builder.PartBuilder;
 import team1502.configuration.Builder.RobotBuilder;
+import team1502.configuration.Builder.SwerveModule;
 import team1502.configuration.Builder.Controllers.GyroSensor;
 import team1502.configuration.Builder.Controllers.MotorController;
 import team1502.configuration.CAN.Manufacturer;
@@ -57,6 +58,10 @@ public class PartFactory {
     }
     public PartFactory MotorController(String name, Function<MotorController, Builder> fn) {
         _builderMap.put(name,  new MotorController(name, fn));
+        return this;
+    }
+    public PartFactory SwerveModule(Function<SwerveModule, Builder> fn) {
+        _builderMap.put("SwerveModule",  new SwerveModule(fn));
         return this;
     }
 

@@ -109,8 +109,12 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
         installBuilder(name, partName, new Motor(), fn);
         return this;
     }    
-    public RobotBuilder MotorController(String name, String partName, Function<team1502.configuration.Builder.Controllers.MotorController, Builder> fn) {        
+    public RobotBuilder MotorController(String name, String partName, Function<MotorController, Builder> fn) {        
         installBuilder(name, partName, new MotorController(), fn);
+        return this;
+    }    
+    public RobotBuilder SwerveModule(String name, Function<SwerveModule, Builder> fn) {        
+        installBuilder(name, "SwerveModule", new SwerveModule(), fn);
         return this;
     }    
 

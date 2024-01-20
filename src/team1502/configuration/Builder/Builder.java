@@ -1,6 +1,7 @@
 package team1502.configuration.Builder;
 
 import java.util.function.Function;
+import java.util.List;
 
 import team1502.configuration.PowerProfile;
 import team1502.configuration.CAN.CanInfo;
@@ -218,6 +219,21 @@ public class Builder {
             .addPartTo(this);
     }
 
+    public Builder InstallPiece(Builder builder) {
+        builder.create(_build);
+        builder.addPieceTo(this);
+        return this;
+    }
+    public Builder Install(Builder builder) {
+        builder.create(_build);
+        builder.addPartTo(this);
+        return this;
+    }
+    public <T extends Builder> Builder Install(T builder, Function<T, Builder> fn) {
+
+        return this;
+    }
+    
     // "raw" install -- need a Function the creates the builder to be installed
     public Builder Install(String newName, Function<Builder, Builder> fn) {
         var builder = fn.apply(this);
@@ -233,6 +249,14 @@ public class Builder {
     
     private void addPart(Part part) {
         _part.addPart(part);
+    }
+
+    private Builder addPieceTo(Builder builder) {
+        builder.addPiece(_part);
+        return this;
+    }
+    private void addPiece(Part part) {
+        _part.addPiece(part);
     }
 
     // E.g., eval - grab a part and put it in an empty builder
@@ -349,6 +373,9 @@ public class Builder {
 
     public Part getPart() {
         return _part;
+    }
+    public List<Part> getPieces() {
+        return _part.getPieces();
     }
     public Part getPart(String valueName) {
         return (Part)getValue(valueName);
