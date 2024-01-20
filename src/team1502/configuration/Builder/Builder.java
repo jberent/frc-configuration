@@ -4,15 +4,19 @@ import java.util.function.Function;
 
 import team1502.configuration.PowerProfile;
 import team1502.configuration.CAN.CanInfo;
+import team1502.configuration.CAN.DeviceType;
+import team1502.configuration.CAN.Manufacturer;
 import team1502.configuration.Parts.Part;
 
 public class Builder {
     public String name;
     public Function<? extends Builder, Builder> buildFunction;
-    public String buildType = "Part";
+    public String buildType = "";
     
     private IBuild _build;
     private Part _part;
+
+    public Builder() {}
     /*
      * 
      //private Builder _parent;
@@ -31,7 +35,7 @@ public class Builder {
         buildFunction = fn;
     }
 
-    protected Builder(String buildType) {
+    public Builder(String buildType) {
         this.buildType = buildType;
         this.name = buildType; // default name can be useful for sub-parts (eval)
     }
@@ -146,7 +150,7 @@ public class Builder {
     }
 
     public Builder build() {
-        if (buildType != "Part" && buildType != _part.getValue("buildType")) {
+        if (buildType != "" && buildType != _part.getValue("buildType")) {
             _part.addError(buildType + " expected");
         }
         apply(buildFunction);//onBuild(_part, buildFunction);
@@ -165,7 +169,7 @@ public class Builder {
     }
 
     // use another builder (of the right subclass) to apply
-    protected <T extends Builder> Object evalWith(Function<T, Object> fn, T builder) {
+    public <T extends Builder> Object evalWith(Function<T, Object> fn, T builder) {
         return builder.eval(fn, _part);
     }
 
@@ -252,24 +256,51 @@ public class Builder {
         return Build(name, name, fn);
     }    
  */
+
+    // VALUES / (EVAL?)
     
-    public Builder Value(String valueName, Object value) {
-        return setValue(valueName, value);
-    }
-
-    protected Builder setValue(String valueName, Object value) {
-        _part.setValue(valueName, value);
-        return this;
-    }
-
     public void configure(Function<Part, Part> fn)
     {
         fn.apply(_part);
     }
+    
+    protected Builder setValue(String valueName, Object value) {
+        _part.setValue(valueName, value);
+        return this;
+    }    
 
+    public Object Value(String valueName) {
+        return getValue(valueName);
+    }
+    public Builder Value(String valueName, Object value) {
+        return setValue(valueName, value);
+    }    
+
+    public String Note(String name) {
+        return (String)Value(name);
+    }    
+    public Builder Note(String name, String detail) {        
+        return Value(name, detail);
+    }    
+    
+    public Builder Type(String buildType) {
+        this.buildType =  buildType;
+        return this;
+    }
 
     // CAN
+    public Builder Device(DeviceType deviceType) {
+        if (buildType == "") {
+            Type(deviceType.toString());
+        }
+        configure(part -> part.CanInfo(c -> c.Device(deviceType)));
+        return this;
+    }
 
+    public Builder Manufacturer(Manufacturer manufacturer) {
+        configure(part -> part.CanInfo(c -> c.Manufacturer(manufacturer)));
+        return this;
+    }
     public Builder CanInfo(Function<CanInfo, CanInfo> fn)
     {
         _part.CanInfo(fn);
@@ -296,6 +327,10 @@ public class Builder {
     // EVAL 
 
 
+    public Object getValue(String valueName, Object defaultValue) {
+        var result = getValue(valueName);
+        return result != null ? result : defaultValue;
+    }
     public Object getValue(String valueName) {
         return _part.getValue(valueName);
     }
@@ -312,6 +347,9 @@ public class Builder {
         return ((Integer)getValue(valueName)).doubleValue();
     }
 
+    public Part getPart() {
+        return _part;
+    }
     public Part getPart(String valueName) {
         return (Part)getValue(valueName);
     }
@@ -319,6 +357,9 @@ public class Builder {
     
     public int getCanNumber() {
         return _part.getCanId();
+    }
+    public Manufacturer getManufacturer() {
+        return _part.getCanInfo().manufacturer;
     }
     
 }

@@ -17,6 +17,13 @@ public class Controller extends Builder {
     // public PowerProfile powerProfile;
 
     
+    public Controller(String name, DeviceType deviceType, Manufacturer manufacturer, Function<? extends Builder,  Builder> fn ) {
+        super(deviceType.toString(), name, c -> c
+            .CanInfo(can -> can
+                .Device(deviceType)
+                .Manufacturer(manufacturer))
+            .Apply(fn));
+    }
     public Controller(String name, DeviceType deviceType, Function<? extends Builder,  Builder> fn ) {
         super(deviceType.toString(), name, c -> c
             .CanInfo(can -> can.Device(deviceType))
@@ -51,6 +58,9 @@ public class Controller extends Builder {
 
     public int CanNumber() {
         return getCanNumber();
+    }
+    public Manufacturer Manufacturer() {
+        return getManufacturer();
     }
 
 /*

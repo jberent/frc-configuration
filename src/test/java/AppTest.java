@@ -22,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.text.MessageFormat;
 import java.util.List;
 
+import javax.sound.sampled.LineUnavailableException;
+
 public class AppTest {
 /*
     @Test
@@ -35,27 +37,78 @@ public class AppTest {
     }
  */
     public void Test0() {
+        LogMessage("");
+        LogMessage("== TEST 0 ===============");
+
         var robot0a = SwerveDriveVebose.CreateRobot0a();
         var robot0b = SwerveDriveVebose.CreateRobot0b();
         
         var values = robot0a.Values();
-        var mt = values.Value("NEO_MotorType");
-        var mt_2 = values.Value("NEO_MotorType_2");
-        var rpm = (double)values.Value("DriveMotor.Motor.FreeSpeedRPM");
+        var mt = values.getValue("NEO.MotorType");
+        var mt_2 = values.getValue("NEO.MotorType#2");
         
+        // It is expected that a part will be installed from the parts-library
+        // and therefore be unique. Sharing/reusing already built parts is not advised.
+
+        // after "build" that Installs an existing built part,
+        //  the key is the same, but the part is now re-named
+        //  as an examlpe of side-effects of installing existing parts
+        assertTrue("not-NEO" == (String)values.getValue("NEO.name"));
+        
+        assertTrue(5_820.0 == (double)values.getValue("NEO.FreeSpeedRPM"));
+        assertTrue(5_820.0 == (double)values.getValue("DriveMotor.Motor*.FreeSpeedRPM"));
+        assertTrue(1_000.0 == (double)values.getValue("DriveMotor.Motor.FreeSpeedRPM"));
+        LogMessage("Motor.Note = {0} {1}rmp", 
+            values.Eval(e -> e.Part("DriveMotor", m -> m.getPart("Motor").getValue("About"))),
+            values.Eval(e -> e.Part("DriveMotor", m -> m.getPart("Motor").getValue("freeSpeedRPM"))));
+        LogMessage("not-NEO.Note = {0} {1}rpm",
+            values.Eval(e -> e.Part("DriveMotor", m -> m.getPart("not-NEO").getValue("About"))),
+            values.Eval(e -> e.Part("DriveMotor", m -> m.getPart("not-NEO").getValue("freeSpeedRPM"))));
+
+
         values = robot0b.Values();
-        var b_mt = values.Value("NEO_MotorType");
-        var b_rpm = (double)values.Value("DriveMotor.Motor.FreeSpeedRPM");
+        assertTrue(null != values.getValue("Motor.Build Note"));
+        var b_mt = values.getValue("ArmMotor.MotorType");
+        assertTrue(5_820.0 == (double)values.getValue("DriveMotor.Motor.FreeSpeedRPM"));
         
         assertTrue(CANSparkMaxLowLevel.MotorType.kBrushless == mt);
         assertTrue(CANSparkMaxLowLevel.MotorType.kBrushless == mt_2);
         assertTrue(CANSparkMaxLowLevel.MotorType.kBrushless == b_mt);
-        assertTrue(5_820.0 == rpm);
-        assertTrue(5_820.0 == b_rpm);
-        assertEquals(5_280.0, 5_280.0);
+
+        LogMessage("");
+        LogMessage("^^ TEST 0 ===============");
+        LogMessage("");
+        Test1();
+    }
+
+    private void LogMotorInfo(Robot robot, String motorControllerName) {
+        LogMessage("Motor {0} {1} - IdleMode.{2} {3}rpm {4}", motorControllerName,
+            robot.getValue("MotorController.Motor.MotorType", motorControllerName),
+            robot.getValue("MotorController.IdleMode", motorControllerName),
+            robot.getValue("MotorController.Motor.FreeSpeedRPM", motorControllerName),
+            (boolean)robot.getValue("MotorController.Reversed", motorControllerName) ? "Reversed" : ""
+        );
+    }
+    private void LogCanInfo(Robot robot, String controllerName) {
+        LogMessage("{0} CAN={1} Manufaturer={2}", controllerName,
+            robot.getValue("MotorController.CanNumber", controllerName),
+            robot.getValue("MotorController.Manufacturer", controllerName)
+        );
     }
 
     public void Test1() {
+        LogMessage("");
+        LogMessage("== TEST 1 ===============");
+
+        var robot = SwerveDriveVebose.CreateRobot1();
+        LogCanInfo(robot, "Motor#0");
+        LogMotorInfo(robot, "Motor#0");
+
+        LogCanInfo(robot, "Motor#1");
+        LogMotorInfo(robot, "Motor#1");
+        LogCanInfo(robot, "Motor#3");
+        LogMotorInfo(robot, "Motor#3");
+
         /*
          * 
          var robot1a = SwerveDriveVebose.CreateRobot1a();
@@ -86,7 +139,10 @@ public class AppTest {
         ShowMotor(turn);
         ShowMotor(drive);
         */
-        
+        LogMessage("");
+        LogMessage("^^ TEST 1 ===============");
+        LogMessage("");
+
     }
 
     @Test
@@ -320,6 +376,14 @@ public class AppTest {
      
  }
     static void CheckResults(Robot robot) {
+
+    }
+
+    static void LogMessage(String text, Object...args) {
+        System.out.println(MessageFormat.format(text, args));
+    }
+    static void _Log(String format) {
+        //System.out.println(MessageFormat.format("public static final {0} gyro = new {1}({2});", part.name, part.name, part.getCanId() ));
 
     }
 }

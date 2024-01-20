@@ -28,8 +28,8 @@ public class PartFactory {
         return this;
     }
 
-    public void useBuilder(Builder builder) {
-        var template = _builderMap.get(builder.name);
+    public void useBuilder(String partName, Builder builder) {
+        var template = _builderMap.get(partName);
         if (template != null) {
             template.createBuilder(builder);
         }
@@ -40,8 +40,19 @@ public class PartFactory {
         return template.createBuilder();
     }
 
+    public PartFactory Motor(Function<Motor, Builder> fn) {
+        return Motor("Motor", fn);
+    }
     public PartFactory Motor(String name, Function<Motor, Builder> fn) {
         _builderMap.put(name,  new Motor(name, fn));
+        return this;
+    }
+    
+    public PartFactory MotorController(Function<MotorController, Builder> fn) {
+        return MotorController("MotorController", fn);
+    }
+    public PartFactory MotorController(String name, Manufacturer manufacturer, Function<MotorController, Builder> fn) {
+        _builderMap.put(name,  new MotorController(name, manufacturer, fn));
         return this;
     }
     public PartFactory MotorController(String name, Function<MotorController, Builder> fn) {

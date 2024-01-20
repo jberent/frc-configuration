@@ -15,6 +15,7 @@ public class Robot /*extends Part*/ {
     public String name;
     private PartFactory _partFactory = new PartFactory();
     private RobotBuilder _robotBuilder;
+    private Evaluator _evaluator;
     //private DeviceFactory _deviceFactory = new DeviceFactory(this);
     
     //private Equipment _equipment = new Equipment(this);
@@ -34,6 +35,20 @@ public class Robot /*extends Part*/ {
 
     }
 
+    private RobotBuilder getBuilder() {
+        if (_robotBuilder == null) {
+            _robotBuilder = RobotBuilder.Create(_partFactory);
+        }
+        return _robotBuilder;
+    }
+    
+    private Evaluator getEvaluator() {
+        if (_evaluator == null) {
+            _evaluator = new Evaluator(getBuilder());
+        }
+        return _evaluator;
+    }
+
     //public Part getPart(String name) {return _robotBuilder.getPart(name); }
     public CanMap getCanMap() {return _robotBuilder.getCanMap();}
 
@@ -43,19 +58,19 @@ public class Robot /*extends Part*/ {
     }
     
     public Robot Build(Function<RobotBuilder, RobotBuilder> fn) {
-        if (_robotBuilder == null) {
-            _robotBuilder = RobotBuilder.Create(_partFactory);
-        }
-        fn.apply(_robotBuilder);
+        fn.apply(getBuilder());
         return this;
     }
 
-    public RobotBuilder Values() {
-        return _robotBuilder;
+    public Evaluator Values() {
+        return getEvaluator();
     }
-    public Robot Values(Function<RobotBuilder, RobotBuilder> fn) {
-        fn.apply(_robotBuilder);
+    public Robot Values(Function<Evaluator, Evaluator> fn) {
+        fn.apply(getEvaluator());
         return this;
+    }
+    public Object getValue(String valueName, String partName) {
+        return Values().getValue(valueName, partName);
     }
 /*
  * 

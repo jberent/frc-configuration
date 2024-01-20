@@ -11,6 +11,9 @@ import team1502.configuration.CAN.Manufacturer;
 public class MotorController extends Controller {
 
     // Define
+    public MotorController(String name, Manufacturer manufacturer, Function<MotorController, Builder> fn) {
+        super(name, DeviceType.MotorController, manufacturer, fn);
+    }
     public MotorController(String name, Function<MotorController, Builder> fn) {
         super(name, DeviceType.MotorController, fn);
     }
@@ -24,6 +27,9 @@ public class MotorController extends Controller {
     //     super(name, DeviceType.MotorController, manufacturer);
     // }
 
+    public MotorController Motor(String partName) {
+        return Motor(partName, null);
+    }
     public MotorController Motor(String partName, Function<Motor, Builder> fn) {
         Install("Motor", partName, fn);
         return this;
@@ -35,12 +41,20 @@ public class MotorController extends Controller {
         return eval;
     }
 
+    public IdleMode IdleMode() {
+        return (IdleMode)getValue("idleMode");
+    }
     public MotorController IdleMode(IdleMode value) {
         setValue("idleMode", value);
         return this;
     }
     
-    public MotorController Reversed() {
-        setValue("isReversed", true);
+    public boolean Reversed() {
+        var result = getBoolean("isReversed");
+        return result == null ? false : result;
+    }
+    public MotorController Reversed(boolean value) {
+        setValue("isReversed", value);
         return this;
-    }}
+    }
+}

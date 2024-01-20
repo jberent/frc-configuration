@@ -14,7 +14,7 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     private PartFactory _partFactory;
     //private HashMap<String, Part> _partMap = new HashMap<>(); 
     private HashMap<String, Builder> _buildMap = new HashMap<>(); // built parts wrapped in builder
-    private HashMap<String, Function<String,Object>> _valueMap = new HashMap<>(); 
+    //private HashMap<String, Function<String,Object>> _valueMap = new HashMap<>(); 
     
     private CanMap _canMap = new CanMap();
     
@@ -65,19 +65,19 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
         return builder;
     }
 
-    private Builder installBuilder(String partName, Builder builder, Function<? extends Builder, Builder> fn) {
-        builder.Name(partName);
-        _partFactory.useBuilder(builder);
+    private Builder installBuilder(String name, String partName, Builder builder, Function<? extends Builder, Builder> fn) {
+        _partFactory.useBuilder(partName, builder);
+        builder.Name(name);
         builder.create((IBuild)this, fn);
         return installBuilder(builder);
     }
-
-    private Builder installBuilder(String partName, Function<? extends Builder, Builder> fn) {
+/* 
+ * 
+    private Builder installBuilder(String name, String partName, Function<? extends Builder, Builder> fn) {
         var builder = createBuilder(partName, fn);
         return installBuilder(builder);
     }
 
-    // BUILDER AND BUILDER SUBCLASSES
     
     public RobotBuilder Part(DeviceType deviceType, String partName, Function<Builder, Builder> fn) {
         return Part(deviceType.toString(), partName, fn);
@@ -89,19 +89,28 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
         install(builder);
         return this;
     }
+*/
+
+    // BUILDER AND BUILDER SUBCLASSES
 
     public RobotBuilder Part(String partName, Function<Builder, Builder> fn) {
-        installBuilder(partName, fn);
+        return Part(partName, partName, fn);
+    }
+    public RobotBuilder Part(String name, String partName, Function<Builder, Builder> fn) {
+        installBuilder(name, partName, new Builder(), fn);
         return this;
 
     }
 
-    public RobotBuilder Motor(String partName, Function<Motor, Builder> fn) {        
-        installBuilder(partName, new Motor(), fn);
+    public RobotBuilder Motor(Function<Motor, Builder> fn) {
+        return Motor("Motor", "Motor", fn);
+    }
+    public RobotBuilder Motor(String name, String partName, Function<Motor, Builder> fn) {        
+        installBuilder(name, partName, new Motor(), fn);
         return this;
     }    
-    public RobotBuilder MotorController(String partName, Function<team1502.configuration.Builder.Controllers.MotorController, Builder> fn) {        
-        installBuilder(partName, new MotorController(), fn);
+    public RobotBuilder MotorController(String name, String partName, Function<team1502.configuration.Builder.Controllers.MotorController, Builder> fn) {        
+        installBuilder(name, partName, new MotorController(), fn);
         return this;
     }    
 
@@ -109,27 +118,6 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     // VALUES and VALUE EXPRESSIONS
 
     public CanMap getCanMap() {return _canMap;}
-
-    // Eval as-a Motor as long is in the right "Shape"
-    public RobotBuilder Motor(String valueName, String partName, Function<Motor, Object> fn) {
-        _valueMap.put(valueName, s -> getValue(partName, new Motor(), fn));   
-        return this;
-    }
-    public RobotBuilder MotorController(String valueName, String partName, Function<MotorController, Object> fn) {
-        _valueMap.put(valueName, s -> getValue(partName, new MotorController(), fn));   
-        return this;
-    }
-    
-
-
-    public RobotBuilder Value(String valueName, String partName, Function<? extends Builder, Object> fn) {
-        _valueMap.put(valueName, s -> getValue(partName, fn));   
-        return this;
-    }
-    public Object Value(String valueName) {
-        var fn = _valueMap.get(valueName);
-        return fn.apply(valueName);
-    }
 
     private <T extends Builder> Object getValue(String partName, T builder, Function<T, Object> fn) {
         var susBuilder = getInstalled(partName);
@@ -142,6 +130,25 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     }
 
 /*
+     // Eval as-a Motor as long is in the right "Shape"
+     public RobotBuilder Motor(String valueName, String partName, Function<Motor, Object> fn) {
+         _valueMap.put(valueName, s -> getValue(partName, new Motor(), fn));   
+         return this;
+        }
+        public RobotBuilder MotorController(String valueName, String partName, Function<MotorController, Object> fn) {
+            _valueMap.put(valueName, s -> getValue(partName, new MotorController(), fn));   
+        return this;
+    }
+    //public RobotBuilder Eval(String valueName, )
+
+    // public RobotBuilder Value(String valueName, String partName, Function<? extends Builder, Object> fn) {
+    //     _valueMap.put(valueName, s -> getValue(partName, fn));   
+    //     return this;
+    // }
+    // public Object Value(String valueName) {
+    //     var fn = _valueMap.get(valueName);
+    //     return fn.apply(valueName);
+    // }
 
     @Override // IBuild
     public Part getPart(String name) {

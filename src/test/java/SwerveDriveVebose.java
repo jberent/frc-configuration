@@ -11,46 +11,112 @@ public final class SwerveDriveVebose {
         .Create("robot_0", r -> r
             .Parts(define -> define
                 .Part("NEO", n -> n
+                    .Type("Motor")
                     .Value("motorType", CANSparkMaxLowLevel.MotorType.kBrushless)
+                    .Value("freeSpeedRPM", 1_000.0)
                 )
             )
             .Build(hw -> hw
-                .Part("NEO", p -> p.Value("FreeSpeedRPM", 5_820.0))
-                .Part("MotorController", "DriveMotor", m -> m
-                    .CanInfo(c -> c
-                        .Device(DeviceType.MotorController)
-                        .Manufacturer(Manufacturer.REVRobotics))
-                    .Install("Motor2", g -> g.Create("NEO", null))
-                    // useful ?? doesn't this change the name of the NEO?
-                    .Install("Motor", g -> g.Existing("NEO", null))
+                // a Motor type
+                .Part("NEO", p -> p
+                    .Value("freeSpeedRPM", 5_820.0))
+                // a MotorController type
+                .Part("DriveMotor", m -> m
+                    .Device(DeviceType.MotorController)
+                    .Manufacturer(Manufacturer.REVRobotics)
+                    .Install("Motor", g -> g.Create("NEO", n -> n
+                        .Note("About", "NEO from  part-factory w/ 1000rpm")
+                    ))
+                        // "NEO" will now map to "not-NEO"
+                    .Install("not-NEO", g -> g.Existing("NEO", n -> n
+                        .Note("About", "built NEO modified w/ 5820rpm")
+                        .Note("Warning", "this is likely a bad idea as it changes an existing part w/o renaming the key")
+                    ))
                 )
             )
             .Values(k -> k
-                .Value("NEO_MotorType", "NEO", m -> m.getValue("motorType"))
-                .Motor("NEO_MotorType_2", "NEO", m -> m.MotorType())
-                .Value("DriveMotor.Motor.FreeSpeedRPM", "DriveMotor", m -> m.getPart("Motor").getDouble("FreeSpeedRPM"))
+                .Eval("NEO.MotorType", e -> e.Part("NEO", m -> m.getValue("motorType")))
+                .Eval("NEO.MotorType#2", e -> e.Motor("NEO", m -> m.MotorType()))
+                .Eval("NEO.name", e -> e.Motor("NEO", m -> m.getPart().name))
+                .Eval("NEO.FreeSpeedRPM", e -> e.Motor("NEO", m -> m.FreeSpeedRPM()))
+                .Eval("DriveMotor.Motor.FreeSpeedRPM", e -> e.Part("DriveMotor", m -> m.getPart("Motor").getDouble("freeSpeedRPM")))
+                .Eval("DriveMotor.Motor*.FreeSpeedRPM", e -> e.Part("DriveMotor", m -> m.getPart("not-NEO").getDouble("freeSpeedRPM")))
             )
         );
     }
 
     public static Robot CreateRobot0b() { return Robot
         .Create("robot_0", r -> r
+            // Inventory Definitions
             .Parts(define -> define
+                .Motor(n -> n.Note("About", "This makes a motor with the default name \"Motor\""))
                 .Motor("NEO", n -> n
                     .MotorType(CANSparkMaxLowLevel.MotorType.kBrushless)
                     .FreeSpeedRPM(5_820.0)
                 )
             )
+            // Top-Level Parts
             .Build(hw -> hw
-                .Motor("NEO", m -> m)
-                .MotorController("DriveMotor", b -> b
+                .Motor(n -> n.Note("Build Note", "This makes a motor with the default name \"Motor\""))
+                .Motor("ArmMotor", "NEO", m -> m)
+                .MotorController("DriveMotor", "", b -> b
                     .Motor("NEO", m -> m)
                     .IdleMode(IdleMode.kBrake)
                 )
             )
+            // Configuration Values
             .Values(k -> k
-                .Motor("NEO_MotorType", "NEO", m -> m.MotorType())
-                .MotorController("DriveMotor.Motor.FreeSpeedRPM", "DriveMotor", m -> m.Motor().FreeSpeedRPM())
+                .Eval("Motor.Build Note", e -> e.Motor("Motor", m -> m.Note("Build Note")))
+                .Eval("ArmMotor.MotorType", e -> e.Motor("ArmMotor", m -> m.MotorType()))
+                .Eval("DriveMotor.Motor.FreeSpeedRPM", e -> e.MotorController("DriveMotor", m -> m.Motor().FreeSpeedRPM()))
+            )
+        );
+    }
+
+    public static Robot CreateRobot1() { return Robot
+        .Create("robot_0", r -> r
+            // Inventory Definitions
+            .Parts(define -> define
+                .Motor("NEO", m -> m
+                    .MotorType(CANSparkMaxLowLevel.MotorType.kBrushless)
+                    .FreeSpeedRPM(5_820.0)
+                    .Note("NAME", "NEO")
+                    .Note("VERSION", "V1.0/V1.1")
+                    .Note("gearing", "8mm bore pinion gears")
+                )
+                .MotorController("TurningMotor", Manufacturer.REVRobotics, mc -> mc
+                    .Motor("NEO")
+                    .IdleMode(IdleMode.kCoast)
+                )
+                .MotorController("DrivingMotor", Manufacturer.REVRobotics, mc -> mc
+                    .Motor("NEO")
+                    .IdleMode(IdleMode.kBrake)
+                )
+            )
+            // Top-Level Parts
+            .Build(hw -> hw
+                .MotorController("Motor#0", "TurningMotor", mc -> mc
+                    .CanNumber(0)
+                )
+                .MotorController("Motor#1", "DrivingMotor", mc -> mc
+                    .CanNumber(1)
+                )
+                .MotorController("Motor#2", "TurningMotor", mc -> mc
+                    .CanNumber(2)
+                )
+                .MotorController("Motor#3", "DrivingMotor", mc -> mc
+                    .Reversed(true)
+                    .CanNumber(3)
+                )
+            )
+            // Configuration Values
+            .Values(k -> k
+                .Eval("MotorController.Motor.MotorType", e -> e.MotorController(e.partName(), m -> m.Motor().MotorType()))
+                .Eval("MotorController.Motor.FreeSpeedRPM", e -> e.MotorController(e.partName(), m -> m.Motor().FreeSpeedRPM()))
+                .Eval("MotorController.IdleMode", e -> e.MotorController(e.partName(), m -> m.IdleMode()))
+                .Eval("MotorController.Reversed", e -> e.MotorController(e.partName(), m -> m.Reversed()))
+                .Eval("MotorController.CanNumber", e -> e.MotorController(e.partName(), m -> m.CanNumber()))
+                .Eval("MotorController.Manufacturer", e -> e.MotorController(e.partName(), m -> m.Manufacturer()))
             )
         );
     }
