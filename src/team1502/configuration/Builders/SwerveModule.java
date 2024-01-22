@@ -1,9 +1,9 @@
-package team1502.configuration.Builder;
+package team1502.configuration.Builders;
 
 import java.util.function.Function;
 
-import team1502.configuration.Builder.Controllers.CANCoder;
-import team1502.configuration.Builder.Controllers.MotorController;
+import team1502.configuration.Builders.Controllers.CANCoder;
+import team1502.configuration.Builders.Controllers.MotorController;
 import team1502.configuration.CAN.Manufacturer;
 
 public class SwerveModule extends Builder {
@@ -11,14 +11,29 @@ public class SwerveModule extends Builder {
     private static final String AbsoluteEncoder = "Encoder";
     private static final String TurningMotor = "TurningMotor";
     private static final String DrivingMotor = "DrivingMotor";
-    private static final String isReversed = "isReversed";
+    private static final String ISREVERSED = "isReversed";
     
-    public SwerveModule() {}
+    public SwerveModule() { super(NAME); }
 
     public SwerveModule(Function<SwerveModule, Builder> fn) {
         super(NAME, NAME, fn);
     }
+
+    @Override
+    public Builder createBuilder() {
+        return new SwerveModule((Function<SwerveModule, Builder>)buildFunction);
+    }
+    
     public CANCoder Encoder() {return new CANCoder(getPart(AbsoluteEncoder));}
+    public SwerveModule Encoder(Function<CANCoder, Builder> fn) {
+        fn.apply(new CANCoder(getPart(AbsoluteEncoder)));
+        return this;
+    }
+    public SwerveModule Encoder(Manufacturer manufacturer, Function<CANCoder, Builder> fn) {
+        Install(new CANCoder(AbsoluteEncoder, manufacturer, fn));
+        return this;
+    }
+
     public MotorController TurningMotor() { return new MotorController(getPart(TurningMotor)); }
     public SwerveModule TurningMotor(Manufacturer manufacturer, Function<MotorController, Builder> fn) {
         Install(new MotorController(TurningMotor, manufacturer, fn));
@@ -32,7 +47,7 @@ public class SwerveModule extends Builder {
     }
 
     public boolean Reversed() {
-        var result = getBoolean(isReversed);
+        var result = getBoolean(ISREVERSED);
         return result == null ? false : result;
     }
     public SwerveModule Reversed(boolean value) {
@@ -41,11 +56,12 @@ public class SwerveModule extends Builder {
         return this;
     }
 
-    public int CanNumberEncoder() { return 0; }
+    public SwerveModule CanNumber(int rootNumber) { return CanNumbers(rootNumber, rootNumber, rootNumber+1); }
+    public int CanNumberEncoder() { return Encoder().CanNumber(); }
     public int CanNumberTurningMotor() { return TurningMotor().CanNumber(); }
     public int CanNumberDrivingMotor() { return DrivingMotor().CanNumber(); }
     public SwerveModule CanNumbers(int absoluteEncoder, int turningMotor, int drivingMotor) {
-        //Encoder().CanNumber(absoluteEncoder);
+        Encoder().CanNumber(absoluteEncoder);
         TurningMotor().CanNumber(turningMotor);
         DrivingMotor().CanNumber(drivingMotor);
         return this;

@@ -1,8 +1,8 @@
-package team1502.configuration.Builder;
+package team1502.configuration.Builders;
 
 import java.util.function.Function;
 
-import team1502.configuration.Builder.Controllers.MotorController;
+import team1502.configuration.Builders.Controllers.MotorController;
 
 public class GearBox extends Builder{
     private static final String NAME = "GearBox"; 

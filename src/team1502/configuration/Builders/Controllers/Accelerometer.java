@@ -1,8 +1,8 @@
-package team1502.configuration.Builder.Controllers;
+package team1502.configuration.Builders.Controllers;
 
 import java.util.function.Function;
 
-import team1502.configuration.Builder.Builder;
+import team1502.configuration.Builders.Builder;
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
 

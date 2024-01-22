@@ -3,11 +3,11 @@ package team1502.configuration;
 import java.util.HashMap;
 import java.util.function.Function;
 
-import team1502.configuration.Builder.Builder;
-import team1502.configuration.Builder.RobotBuilder;
-import team1502.configuration.Builder.Controllers.MotorController;
-import team1502.configuration.Builder.Motor;
-import team1502.configuration.Builder.SwerveModule;
+import team1502.configuration.Builders.Builder;
+import team1502.configuration.Builders.Motor;
+import team1502.configuration.Builders.RobotBuilder;
+import team1502.configuration.Builders.SwerveModule;
+import team1502.configuration.Builders.Controllers.MotorController;
 
 public class Evaluator {
     private HashMap<String, EvaluatorArgs> _valueMap = new HashMap<>(); 
@@ -32,16 +32,30 @@ public class Evaluator {
     public Object Eval(Function<Evaluator,Object> fn) {
         return fn.apply(this);
     }
+    
+    public <T extends Builder> Object Eval(T builder, Function<T,Object> fn) {
+        return fn.apply(builder);
+    }
+
     // Define
     public Evaluator Eval(String valueName, Function<Evaluator,Object> fn) {
         _valueMap.put(valueName, new EvaluatorArgs(valueName, fn));
         return this;
     }
+    // public Evaluator MotorController(String valueName, Function<MotorController,Object> fn) {
+    //     _valueMap.put(valueName, new EvaluatorArgs(valueName, fn));
+    //     return this;
+    // }
 
-    // Execute storedeval
+    // Execute stored eval
     public Object getValue(String valueName, String partName) {
         var args = _valueMap.get(valueName);
         args.partName = partName;
+        return Eval(args);
+    }
+    public Object getValue(String valueName, Builder part) {
+        var args = _valueMap.get(valueName);
+        args.builder = part;
         return Eval(args);
     }
 
@@ -78,6 +92,10 @@ public class Evaluator {
     }
     public Object SwerveModule(String partName, Function<SwerveModule, Object> fn) {
         return getValue(partName, new SwerveModule(), fn);   
+    }
+
+    public Object SwerveDrive(Function<SwerveModule, Object> fn) {
+        return getValue("SwerveDrive", new SwerveModule(), fn);   
     }
 
 }

@@ -1,4 +1,4 @@
-package team1502.configuration.Builder;
+package team1502.configuration.Builders;
 
 import java.util.function.Function;
 
@@ -41,12 +41,12 @@ public class Gyro extends Builder {
     //     this.CanInfo(new CanInfo(DeviceType.GyroSensor, mfr));
     // }
 
-    public Gyro IsReversed(boolean reversed) {
+    public Gyro Reversed(boolean reversed) {
         setValue(ISREVERSED, reversed);
         return this;
     }
 
-    public Boolean isReversed() {
+    public Boolean Reversed() {
         return getBoolean(ISREVERSED);
     }
 }

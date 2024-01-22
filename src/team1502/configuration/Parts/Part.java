@@ -10,7 +10,7 @@ import java.util.function.Function;
 import team1502.configuration.CAN.CanInfo;
 import team1502.configuration.CAN.ICAN;
 import team1502.configuration.PowerProfile;
-import team1502.configuration.Builder.RobotBuilder;;
+import team1502.configuration.Builders.RobotBuilder;;
 
 public class Part implements ICAN {
     private HashMap<String, Object> _values = new HashMap<>();

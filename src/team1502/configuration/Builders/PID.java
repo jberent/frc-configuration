@@ -1,6 +1,6 @@
-package team1502.configuration.Builder;
+package team1502.configuration.Builders;
 
-import team1502.configuration.Builder.Controllers.MotorController;
+import team1502.configuration.Builders.Controllers.MotorController;
 
 public class PID extends Builder {
     private static final String NAME = "PID"; 

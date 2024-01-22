@@ -1,14 +1,14 @@
 package team1502.configuration;
 import java.util.function.Function;
 
-import team1502.configuration.Builder.Controllers.Controller;
-import team1502.configuration.Builder.Controllers.GyroSensor;
+import team1502.configuration.Builders.Controllers.Controller;
+import team1502.configuration.Builders.Controllers.GyroSensor;
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
 
 public enum SupportedDevices {
     MotorCANSparkMax ( "SparkMax", device -> new Controller("SparkMax", DeviceType.MotorController, Manufacturer.REVRobotics)),
-    CANcoder("CANcoder", name-> new GyroSensor(name, Manufacturer.REVRobotics)),
+    CANcoder("CANcoder", name-> new GyroSensor(name, Manufacturer.REVRobotics, g -> g)),
     Pigeon2 (name -> new GyroSensor(name, Manufacturer.CTRElectronics, g -> g)); //.PowerProfile(0.4)));
 
     public Function<String,Controller> defineEquipment;

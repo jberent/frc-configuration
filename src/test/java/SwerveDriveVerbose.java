@@ -1,6 +1,7 @@
 package test.java;
 
 import team1502.Wpi.CANSparkMax.IdleMode;
+import team1502.Wpi.CANSparkMaxLowLevel.MotorType;
 import team1502.Wpi.CANSparkMaxLowLevel;
 import team1502.configuration.Robot;
 import team1502.configuration.CAN.DeviceType;
@@ -94,7 +95,7 @@ public final class SwerveDriveVerbose {
                     )
                 )
                 .MotorController("DrivingMotor", Manufacturer.REVRobotics, mc -> mc
-                    .Motor("NEO")
+                    .Motor("NEO", m -> m.MotorType(MotorType.kBrushed))
                     .IdleMode(IdleMode.kBrake)
                     .GearBox(g-> g
                         .Gear("Stage1", 14, 50)
@@ -147,6 +148,10 @@ public final class SwerveDriveVerbose {
         .Create("robot_SwerveModule_Test", r -> r
             // Inventory Definitions
             .Parts(define -> define
+                .GyroSensor("Pigeon2", Manufacturer.CTRElectronics, p -> p
+                    .Reversed(false)
+                    .PowerProfile(0.4)
+                )
                 .Motor("NEO", m -> m
                     .MotorType(CANSparkMaxLowLevel.MotorType.kBrushless)
                     .FreeSpeedRPM(5_820.0)
@@ -155,6 +160,9 @@ public final class SwerveDriveVerbose {
                     .Note("gearing", "8mm bore pinion gears")
                 )
                 .SwerveModule(sm -> sm
+                    .Encoder(Manufacturer.REVRobotics, cc -> cc
+                        .Direction(false)
+                    )
                     .TurningMotor(Manufacturer.REVRobotics, mc -> mc
                         .Motor("NEO")
                         .IdleMode(IdleMode.kCoast)
@@ -176,15 +184,31 @@ public final class SwerveDriveVerbose {
                         )
                     )
                 )
+                .SwerveDrive(sd -> sd)
             )
             // Top-Level Parts
             .Build(hw -> hw
                 .SwerveModule("Module#1", sm -> sm
                     .CanNumbers(0, 0, 1)
+                    .Encoder(e -> e.MagneticOffset(92.2))
+                    .Value("test", "this is a stand-alone part")           
                 )
                 .SwerveModule("Module#2", sm -> sm
+                    .CanNumber(2)
+                    .Encoder(e -> e.MagneticOffset(192.2))
                     .Reversed(true)
-                    .CanNumbers(2, 2, 3)
+                )
+                .SwerveDrive(sd -> sd
+                    .SwerveModule("Module#1", sm -> sm
+                        .CanNumbers(0, 0, 1)
+                        .Encoder(e -> e.MagneticOffset(92.2))
+                        .Value("test2", "this should not have 'test' note")           
+                    )
+                    .SwerveModule("Module#2", sm -> sm
+                        .CanNumber(2)
+                        .Encoder(e -> e.MagneticOffset(192.2))
+                        .Reversed(true)
+                    )
                 )
             )
             // Configuration Values
@@ -193,8 +217,18 @@ public final class SwerveDriveVerbose {
                     .SwerveModule(e.partName(), m -> m.TurningMotor().Motor().MotorType()))
                 .Eval("SwerveModule.TurningMotor.Reversed", e -> e
                     .SwerveModule(e.partName(), m -> m.TurningMotor().Reversed()))
+                .Eval("SwerveModule.Encoder.Direction", e -> e
+                    .SwerveModule(e.partName(), m -> m.Encoder().Direction()))
+                .Eval("SwerveModule.Encoder.MagneticOffset", e -> e
+                    .SwerveModule(e.partName(), m -> m.Encoder().MagneticOffset()))
+                .Eval("SwerveModule.Encoder.MagneticOffset", e -> e
+                    .SwerveModule(e.partName(), m -> m.Encoder().MagneticOffset()))
+                .Eval("SwerveDrive.Modules", e -> e
+                    .SwerveDrive(m -> m.getPieces()))
 
 
+
+    
                 .Eval("MotorController.Motor.FreeSpeedRPM", e -> e
                     .MotorController(e.partName(), m -> m.Motor().FreeSpeedRPM()))
                 .Eval("MotorController.IdleMode", e -> e
@@ -304,6 +338,7 @@ public final class SwerveDriveVerbose {
             .Create("robot_1b", r -> r
             /*
             .Parts(define -> define
+    // Pigeon2 might actually be an accelerometer ??
                 .Gyro("Pigeon2", Manufacturer.CTRElectronics, p -> p
                     .IsReversed(false)
                     .PowerProfile(0.4)

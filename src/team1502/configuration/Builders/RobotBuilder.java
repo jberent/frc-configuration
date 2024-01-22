@@ -1,10 +1,10 @@
-package team1502.configuration.Builder;
+package team1502.configuration.Builders;
 
 import java.util.HashMap;
 import java.util.function.Function;
 
-import team1502.configuration.Builder.Controllers.GyroSensor;
-import team1502.configuration.Builder.Controllers.MotorController;
+import team1502.configuration.Builders.Controllers.GyroSensor;
+import team1502.configuration.Builders.Controllers.MotorController;
 import team1502.configuration.CAN.CanMap;
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.Parts.Part;
@@ -46,6 +46,7 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     @Override // IBuild
     public Builder createBuilder(String partName, Function<? extends Builder, Builder> fn) {
         var builder = _partFactory.getBuilder(partName);
+        var cls = builder.getClass();
         builder.create((IBuild)this, partName, fn);
         return builder;
     }
@@ -115,6 +116,10 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     }    
     public RobotBuilder SwerveModule(String name, Function<SwerveModule, Builder> fn) {        
         installBuilder(name, "SwerveModule", new SwerveModule(), fn);
+        return this;
+    }    
+    public RobotBuilder SwerveDrive(Function<SwerveDrive, Builder> fn) {        
+        installBuilder("SwerveDrive", "SwerveDrive", new SwerveDrive(), fn);
         return this;
     }    
 

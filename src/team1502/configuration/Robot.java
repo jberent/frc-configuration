@@ -2,9 +2,9 @@ package team1502.configuration;
 
 import java.util.function.Function;
 
-import team1502.configuration.Builder.Builder;
-import team1502.configuration.Builder.PartBuilder;
-import team1502.configuration.Builder.RobotBuilder;
+import team1502.configuration.Builders.Builder;
+import team1502.configuration.Builders.PartBuilder;
+import team1502.configuration.Builders.RobotBuilder;
 import team1502.configuration.CAN.CanMap;
 import team1502.configuration.Factory.DeviceFactory;
 import team1502.configuration.Parts.Part;
@@ -69,10 +69,16 @@ public class Robot /*extends Part*/ {
         fn.apply(getEvaluator());
         return this;
     }
+    public Object getValue(String valueName) {
+        return Values().getValue(valueName);
+    }
     public Object getValue(String valueName, String partName) {
         return Values().getValue(valueName, partName);
     }
 /*
+    public Object getValue(String valueName, Builder builder {
+        return Values().getValue(valueName, builder);
+    }
  * 
     // public Robot Build2(String name, Function<Part, Part> fn) {
     //     var builder = _partFactory.getBuilder(name);

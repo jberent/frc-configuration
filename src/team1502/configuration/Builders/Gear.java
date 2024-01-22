@@ -1,4 +1,4 @@
-package team1502.configuration.Builder;
+package team1502.configuration.Builders;
 
 public class Gear extends Builder {
     public Gear(String stage, int drivingTeeth, int drivenTeeth) {

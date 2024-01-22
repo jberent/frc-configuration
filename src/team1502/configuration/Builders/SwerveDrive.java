@@ -1,17 +1,22 @@
-package team1502.configuration.Builder;
+package team1502.configuration.Builders;
 
 import java.util.function.Function;
 
 public class SwerveDrive extends Builder {
+    private static final String NAME = "SwerveDrive";
+    private static final String MODULE = "SwerveModule";
 
-    public SwerveDrive(Builder parent) {
-        super("SwerveDrive");
+    public SwerveDrive() { super(NAME); }
+    public SwerveDrive(Function<SwerveDrive, Builder> fn) { super(NAME, NAME, fn); }
+
+    public SwerveDrive SwerveModule(String name, Function<SwerveModule, Builder> fn) {
+        InstallPiece(name, MODULE, fn);
+        return this;
     }
 
-    public SwerveDrive SwerveModule(String name, Function<SwerveModule, SwerveModule> fn) {
-        // var swerve = new SwerveModuleBuilder(this);
-        // fn.apply(swerve);
-        return this;
+    @Override
+    public Builder createBuilder() {
+        return new SwerveDrive((Function<SwerveDrive, Builder>)buildFunction);
     }
 
 }

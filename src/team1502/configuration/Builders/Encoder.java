@@ -1,4 +1,4 @@
-package team1502.configuration.Builder;
+package team1502.configuration.Builders;
 
 import java.util.function.Function;
 

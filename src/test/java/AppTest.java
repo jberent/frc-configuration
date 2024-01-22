@@ -6,7 +6,8 @@ import team1502.Wpi.CANSparkMaxLowLevel;
 import team1502.Wpi.CANSparkMax.IdleMode;
 import team1502.configuration.Robot;
 import team1502.configuration.SupportedDevices;
-import team1502.configuration.Builder.Controllers.GyroSensor;
+import team1502.configuration.Builders.Controllers.GyroSensor;
+import team1502.configuration.Builders.Controllers.MotorController;
 import team1502.configuration.CAN.CanMap;
 import team1502.configuration.CAN.CanInfo;
 import team1502.configuration.CAN.DeviceType;
@@ -173,6 +174,10 @@ public class AppTest {
             (boolean)robot.getValue("SwerveModule.TurningMotor.Reversed", "Module#2") ? "Reversed" : ""
             );
 
+            // var mc = (MotorController)robot.getValue("SwerveModule.TurningMotor", "Module#1");
+            // var mtr = (MotorController)robot.getValue("MotorController.Motor", mc);
+        var modules = robot.getValue("SwerveDrive.Modules");
+        
         LogMessage("");
         LogMessage("^^ TEST 2 ===============");
         LogMessage("");

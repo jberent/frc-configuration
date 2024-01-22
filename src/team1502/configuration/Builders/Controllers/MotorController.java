@@ -1,18 +1,19 @@
-package team1502.configuration.Builder.Controllers;
+package team1502.configuration.Builders.Controllers;
 
 import java.util.function.Function;
 
 import team1502.Wpi.CANSparkMax.IdleMode;
-import team1502.configuration.Builder.Builder;
-import team1502.configuration.Builder.Motor;
+import team1502.configuration.Builders.Builder;
+import team1502.configuration.Builders.GearBox;
+import team1502.configuration.Builders.Motor;
+import team1502.configuration.Builders.PID;
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
 import team1502.configuration.Parts.Part;
-import team1502.configuration.Builder.GearBox;
-import team1502.configuration.Builder.PID;
 
 public class MotorController extends Controller {
     private static final String NAME = "MotorController"; 
+    private static final String ISREVERSED = "isReversed";
 
     // Define
     public MotorController(String name, Manufacturer manufacturer, Function<MotorController, Builder> fn) {
@@ -30,6 +31,19 @@ public class MotorController extends Controller {
         super(DeviceType.MotorController);
         setPart(part);
     }
+
+    /**
+     * Install
+     */
+    public MotorController(Function<MotorController, Builder> fn) {
+        super(DeviceType.MotorController, fn);
+    }
+
+    @Override
+    public Builder createBuilder() {
+        return new MotorController(Function<MotorController, Builder> buildFunction);
+    }
+
     
     public MotorController Motor(String partName) {
         return Motor(partName, null);
@@ -52,11 +66,11 @@ public class MotorController extends Controller {
     }
     
     public boolean Reversed() {
-        var result = getBoolean("isReversed");
+        var result = getBoolean(ISREVERSED);
         return result == null ? false : result;
     }
     public MotorController Reversed(boolean value) {
-        setValue("isReversed", value);
+        setValue(ISREVERSED, value);
         return this;
     }
 

@@ -1,4 +1,4 @@
-package team1502.configuration.Builder;
+package team1502.configuration.Builders;
 
 import java.util.function.Function;
 import java.util.List;
@@ -217,6 +217,12 @@ public class Builder {
         return builder
             .Name(newName)
             .addPartTo(this);
+    }
+    public Builder InstallPiece(String newName, String partName, Function<? extends Builder, Builder> fn) {
+        var builder = _build.createBuilder(partName, fn);
+        return builder
+            .Name(newName)
+            .addPieceTo(this);
     }
 
     public Builder InstallPiece(Builder builder) {

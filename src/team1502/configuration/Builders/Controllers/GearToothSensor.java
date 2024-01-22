@@ -1,4 +1,4 @@
-package team1502.configuration.Builder.Controllers;
+package team1502.configuration.Builders.Controllers;
 
 import team1502.configuration.CAN.DeviceType;
 
