@@ -36,5 +36,10 @@ public class Encoder extends Builder {
           super("EncoderSensor");
           buildFunction = fn;
       }
-
+      
+      @Override
+      public Builder createBuilder() {
+          return new Encoder((Function<Encoder, Builder>)buildFunction);
+      }
+  
 }

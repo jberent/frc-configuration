@@ -184,7 +184,11 @@ public final class SwerveDriveVerbose {
                         )
                     )
                 )
-                .SwerveDrive(sd -> sd)
+                .SwerveDrive(sd -> sd
+                    .Chassis(c -> c
+                        .Square(23.25)
+                    )
+                )
             )
             // Top-Level Parts
             .Build(hw -> hw

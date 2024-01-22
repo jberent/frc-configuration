@@ -41,7 +41,7 @@ public class MotorController extends Controller {
 
     @Override
     public Builder createBuilder() {
-        return new MotorController(Function<MotorController, Builder> buildFunction);
+        return new MotorController((Function<MotorController, Builder>)buildFunction);
     }
 
     

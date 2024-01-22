@@ -1,5 +1,7 @@
 package team1502.configuration.Builders;
 
+import java.util.function.Function;
+
 import team1502.configuration.Builders.Controllers.MotorController;
 
 public class PID extends Builder {
@@ -14,6 +16,15 @@ public class PID extends Builder {
 
     public PID(MotorController motorController) {
         setPart(motorController.getPart(NAME));
+    }
+    
+    public PID(Function<PID, Builder> buildFunction) {
+        super(NAME, NAME, buildFunction);
+    }
+
+    @Override
+    public Builder createBuilder() {
+        return new PID((Function<PID, Builder>)buildFunction);
     }
 
     public double P() {return getDouble("p"); }

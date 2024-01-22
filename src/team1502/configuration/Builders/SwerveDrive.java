@@ -18,6 +18,10 @@ public class SwerveDrive extends Builder {
     public Builder createBuilder() {
         return new SwerveDrive((Function<SwerveDrive, Builder>)buildFunction);
     }
+    public Chassis Chassis(Object object) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'Chassis'");
+    }
 
 }
 /*
